@@ -19,6 +19,7 @@ import fr.florianpal.beerrecipe.data.entity.RecipeYeast
 import fr.florianpal.beerrecipe.data.entity.WaterProfile
 import fr.florianpal.beerrecipe.data.entity.Yeast
 import fr.florianpal.beerrecipe.data.seed.ReferenceRecipe
+import fr.florianpal.beerrecipe.domain.model.AmountUnit
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
@@ -150,6 +151,13 @@ class BrewRepository(private val db: AppDatabase) {
         db.recipeDao().insertYeasts(ref.yeasts.map {
             it.copy(id = 0, recipeId = id, amountG = it.amountG * factor,
                 catalogId = catalogYeasts.idOf(it.name, Yeast::name, Yeast::id))
+        })
+        val catalogAdditives = additives.first()
+        db.recipeDao().insertAdditives(ref.additives.map {
+            // Une pastille ou une gousse ne se fractionne pas : seules les masses et volumes suivent.
+            val amount = if (it.unit == AmountUnit.UNIT) it.amount else it.amount * factor
+            it.copy(id = 0, recipeId = id, amount = amount,
+                catalogId = catalogAdditives.idOf(it.name, Additive::name, Additive::id))
         })
         db.recipeDao().insertMashSteps(ref.mashSteps.map { it.copy(id = 0, recipeId = id) })
         db.recipeDao().insertFermentationSteps(ref.fermentationSteps.map { it.copy(id = 0, recipeId = id) })

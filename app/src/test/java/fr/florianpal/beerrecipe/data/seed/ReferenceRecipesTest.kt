@@ -15,7 +15,7 @@ class ReferenceRecipesTest {
 
     @Test
     fun `les recettes de reference sont toutes la et portent des noms distincts`() {
-        assertEquals(12, refs.size)
+        assertEquals(32, refs.size)
         assertEquals(refs.size, refs.map { it.recipe.name }.toSet().size)
         refs.forEach { assertTrue("${it.recipe.name} sans description", it.description.isNotBlank()) }
     }
@@ -59,5 +59,32 @@ class ReferenceRecipesTest {
             val og = BrewCalculator.compute(ctx).og
             assertTrue("${ref.recipe.name} : DI $og", og in 1.025..1.095)
         }
+    }
+
+    @Test
+    fun `les classiques tombent dans les plages de leur style pour 20 L`() {
+        val equipment = Equipment(name = "20 L", batchVolumeL = 20.0)
+        val misses = ReferenceClassics.ALL.mapNotNull { ref ->
+            val style = SeedStyles.ALL.first { it.code == ref.styleCode && it.name == ref.styleName }
+            val ctx = RecipeContext(
+                details = RecipeWithDetails(
+                    recipe = ref.recipe, malts = ref.malts, hops = ref.hops, yeasts = ref.yeasts,
+                    additives = ref.additives, mashSteps = ref.mashSteps,
+                    fermentationSteps = ref.fermentationSteps,
+                ),
+                equipment = equipment, style = style, water = null,
+            )
+            val s = BrewCalculator.compute(ctx)
+            println("CLASSIC %-20s DI=%.3f (%.3f–%.3f) IBU=%.0f (%.0f–%.0f) EBC=%.0f (%.0f–%.0f)".format(
+                ref.recipe.name, s.og, style.ogMin, style.ogMax, s.ibu, style.ibuMin, style.ibuMax,
+                s.ebc, style.ebcMin, style.ebcMax))
+            val ogOk = s.og in (style.ogMin - 0.002)..(style.ogMax + 0.002)
+            val ibuOk = s.ibu in (style.ibuMin - 3)..(style.ibuMax + 3)
+            // Les formules de couleur divergent pour les bières très foncées : tolérance plus large.
+            val ebcOk = s.ebc in (style.ebcMin * 0.85)..(style.ebcMax * 1.3)
+            if (ogOk && ibuOk && ebcOk) null
+            else "${ref.recipe.name} : DI ${"%.3f".format(s.og)}, IBU ${"%.0f".format(s.ibu)}, EBC ${"%.0f".format(s.ebc)}"
+        }
+        assertTrue(misses.joinToString("\n"), misses.isEmpty())
     }
 }

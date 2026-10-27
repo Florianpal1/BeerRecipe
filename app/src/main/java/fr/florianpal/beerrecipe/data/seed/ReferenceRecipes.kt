@@ -3,6 +3,7 @@ package fr.florianpal.beerrecipe.data.seed
 import fr.florianpal.beerrecipe.data.entity.FermentationStep
 import fr.florianpal.beerrecipe.data.entity.MashStep
 import fr.florianpal.beerrecipe.data.entity.Recipe
+import fr.florianpal.beerrecipe.data.entity.RecipeAdditive
 import fr.florianpal.beerrecipe.data.entity.RecipeHop
 import fr.florianpal.beerrecipe.data.entity.RecipeMalt
 import fr.florianpal.beerrecipe.data.entity.RecipeYeast
@@ -29,6 +30,7 @@ data class ReferenceRecipe(
     val yeasts: List<RecipeYeast>,
     val mashSteps: List<MashStep>,
     val fermentationSteps: List<FermentationStep>,
+    val additives: List<RecipeAdditive> = emptyList(),
     val description: String = "",
 )
 
@@ -70,7 +72,8 @@ object ReferenceRecipes {
     private fun fermentation(name: String, temperatureC: Double, days: Int) =
         FermentationStep(recipeId = 0, name = name, temperatureC = temperatureC, days = days)
 
-    val ALL: List<ReferenceRecipe> = listOf(
+    /** Les recettes maison, pour environ 5 L, sur malt Pilsen. */
+    private val HOUSE: List<ReferenceRecipe> = listOf(
         ReferenceRecipe(
             styleCode = "X1",
             styleName = "NEPA (Hazy Pale Ale)",
@@ -435,15 +438,18 @@ object ReferenceRecipes {
                 fermentation("Garde à froid", 3.0, 5),
             ),
         ),
-    ).map { ref ->
+    )
+
+    val ALL: List<ReferenceRecipe> = (HOUSE + ReferenceClassics.ALL).map { ref ->
         // Positions dans l'ordre de déclaration, comme à la saisie.
         ref.copy(
-            description = DESCRIPTIONS[ref.recipe.name].orEmpty(),
+            description = ref.description.ifBlank { DESCRIPTIONS[ref.recipe.name].orEmpty() },
             malts = ref.malts.mapIndexed { i, it -> it.copy(position = i) },
             hops = ref.hops.mapIndexed { i, it -> it.copy(position = i) },
             yeasts = ref.yeasts.mapIndexed { i, it -> it.copy(position = i) },
             mashSteps = ref.mashSteps.mapIndexed { i, it -> it.copy(position = i) },
             fermentationSteps = ref.fermentationSteps.mapIndexed { i, it -> it.copy(position = i) },
+            additives = ref.additives.mapIndexed { i, it -> it.copy(position = i) },
         )
     }
 
