@@ -14,8 +14,9 @@ android {
         applicationId = "fr.florianpal.beerrecipe"
         minSdk = 36
         targetSdk = 37
-        versionCode = 1
-        versionName = "1.0"
+        // En CI, la version vient de la release GitHub : le tag donne le nom, le numéro de build le code.
+        versionCode = System.getenv("BEERRECIPE_VERSION_CODE")?.toIntOrNull() ?: 1
+        versionName = System.getenv("BEERRECIPE_VERSION_NAME") ?: "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -29,8 +30,23 @@ android {
         arg("room.generateKotlin", "true")
     }
 
+    // Clé de signature des releases : fournie par les secrets GitHub, jamais versionnée.
+    // Sans elle (build local), l'APK de release est produit non signé.
+    val releaseKeystore = System.getenv("BEERRECIPE_KEYSTORE_FILE")
+    signingConfigs {
+        if (releaseKeystore != null) {
+            create("release") {
+                storeFile = file(releaseKeystore)
+                storePassword = System.getenv("BEERRECIPE_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("BEERRECIPE_KEY_ALIAS")
+                keyPassword = System.getenv("BEERRECIPE_KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
+            signingConfig = signingConfigs.findByName("release")
             optimization {
                 enable = true
                 packageScope = setOf("androidx.**", "kotlin.**", "kotlinx.**")
