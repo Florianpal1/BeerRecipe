@@ -18,8 +18,10 @@ import fr.florianpal.beerrecipe.data.entity.RecipeWithDetails
 import fr.florianpal.beerrecipe.data.entity.RecipeYeast
 import fr.florianpal.beerrecipe.data.entity.WaterProfile
 import fr.florianpal.beerrecipe.data.entity.Yeast
+import fr.florianpal.beerrecipe.data.seed.ReferenceRecipe
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 /**
@@ -102,6 +104,57 @@ class BrewRepository(private val db: AppDatabase) {
 
     suspend fun duplicateRecipe(details: RecipeWithDetails): Long =
         db.recipeDao().duplicate(details, "${details.recipe.name} (copie)")
+
+    /**
+     * Copie une recette de référence dans les recettes de l'utilisateur, sur son installation
+     * par défaut. Les quantités suivent le volume de l'installation ; style, eau et fiches de
+     * catalogue sont retrouvés par leur nom quand ils existent.
+     */
+    suspend fun importReferenceRecipe(ref: ReferenceRecipe): Long {
+        val equipment = db.equipmentDao().firstOrDefault()
+        val factor = equipment?.batchVolumeL?.takeIf { it > 0 }
+            ?.let { it / ref.recipe.batchVolumeL } ?: 1.0
+        // Le nom d'abord ; à défaut le code BJCP, s'il ne désigne qu'un style (21B en couvre plusieurs).
+        val allStyles = styles.first()
+        val style = allStyles.firstOrNull { it.name.equals(ref.styleName, ignoreCase = true) }
+            ?: allStyles.filter { it.code == ref.styleCode }.singleOrNull()
+        val water = ref.waterName?.let { name ->
+            waterProfiles.first().firstOrNull { it.name.equals(name, ignoreCase = true) }
+        }
+        fun <T> List<T>.idOf(name: String, nameOf: (T) -> String, idOf: (T) -> Long): Long? =
+            firstOrNull { nameOf(it).equals(name, ignoreCase = true) }?.let(idOf)
+        val catalogMalts = malts.first()
+        val catalogHops = hops.first()
+        val catalogYeasts = yeasts.first()
+        val now = System.currentTimeMillis()
+
+        val id = db.recipeDao().upsert(
+            ref.recipe.copy(
+                id = 0,
+                styleId = style?.id,
+                equipmentId = equipment?.id,
+                sourceWaterId = water?.id,
+                batchVolumeL = ref.recipe.batchVolumeL * factor,
+                createdAt = now,
+                updatedAt = now,
+            )
+        )
+        db.recipeDao().insertMalts(ref.malts.map {
+            it.copy(id = 0, recipeId = id, amountG = it.amountG * factor,
+                catalogId = catalogMalts.idOf(it.name, Malt::name, Malt::id))
+        })
+        db.recipeDao().insertHops(ref.hops.map {
+            it.copy(id = 0, recipeId = id, amountG = it.amountG * factor,
+                catalogId = catalogHops.idOf(it.name, Hop::name, Hop::id))
+        })
+        db.recipeDao().insertYeasts(ref.yeasts.map {
+            it.copy(id = 0, recipeId = id, amountG = it.amountG * factor,
+                catalogId = catalogYeasts.idOf(it.name, Yeast::name, Yeast::id))
+        })
+        db.recipeDao().insertMashSteps(ref.mashSteps.map { it.copy(id = 0, recipeId = id) })
+        db.recipeDao().insertFermentationSteps(ref.fermentationSteps.map { it.copy(id = 0, recipeId = id) })
+        return id
+    }
 
     /**
      * Met à l'échelle une recette vers un autre volume. Les ingrédients suivent

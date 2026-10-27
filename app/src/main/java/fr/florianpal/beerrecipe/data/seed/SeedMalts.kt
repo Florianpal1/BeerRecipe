@@ -38,6 +38,10 @@ object SeedMalts {
         malt("Malt Pilsner", FermentableType.BASE, "Allemagne", 3.5, 81.0, 105.0,
             styles = listOf("German Pils", "Kölsch", "Saison", "Belgian Tripel"),
             notes = "Demande une ébullition de 90 min pour chasser le DMS."),
+        malt("Malt Pilsen bio", FermentableType.BASE, "Belgique", 3.5, 80.5, 80.0,
+            styles = listOf("Hazy IPA", "Belgian Blond Ale", "Blonde Ale"),
+            notes = "Pilsen biologique Dingemans. Valeurs typiques : à ajuster d'après la fiche du lot.")
+            .copy(maltster = "Dingemans"),
         malt("Malt Pale Ale", FermentableType.BASE, "France", 6.0, 81.0, 85.0,
             styles = listOf("American Pale Ale", "American IPA", "Best Bitter")),
         malt("Maris Otter", FermentableType.BASE, "Royaume-Uni", 4.0, 81.0, 60.0,

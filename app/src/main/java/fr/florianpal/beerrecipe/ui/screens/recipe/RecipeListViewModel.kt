@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import fr.florianpal.beerrecipe.data.entity.RecipeContext
 import fr.florianpal.beerrecipe.data.repository.BrewRepository
+import fr.florianpal.beerrecipe.data.seed.ReferenceRecipe
+import fr.florianpal.beerrecipe.data.seed.ReferenceRecipes
 import fr.florianpal.beerrecipe.domain.calc.BrewCalculator
 import fr.florianpal.beerrecipe.domain.calc.RecipeStats
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,6 +39,10 @@ class RecipeListViewModel(private val repository: BrewRepository) : ViewModel() 
     fun search(value: String) { query.value = value }
 
     suspend fun createRecipe(name: String): Long = repository.createRecipe(name)
+
+    val referenceRecipes: List<ReferenceRecipe> = ReferenceRecipes.ALL
+
+    suspend fun importReference(ref: ReferenceRecipe): Long = repository.importReferenceRecipe(ref)
 
     fun duplicate(card: RecipeCardState) = viewModelScope.launch {
         repository.duplicateRecipe(card.context.details)

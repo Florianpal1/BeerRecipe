@@ -49,7 +49,7 @@ object DatabaseSeeder {
      * Version des catalogues de référence. À incrémenter à chaque ajout dans les fichiers
      * Seed* pour que les installations existantes reçoivent les nouvelles fiches.
      */
-    const val CATALOG_VERSION = 2
+    const val CATALOG_VERSION = 3
 
     private const val PREFS = "seed"
     private const val KEY_CATALOG_VERSION = "catalog_version"

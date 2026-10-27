@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Delete
@@ -66,10 +67,20 @@ fun RecipeListScreen(onOpenRecipe: (Long) -> Unit) {
 
     var showCreateDialog by remember { mutableStateOf(false) }
     var pendingDelete by remember { mutableStateOf<RecipeCardState?>(null) }
+    var showReferences by remember { mutableStateOf(false) }
 
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
-        topBar = { TopAppBar(title = { Text("Mes recettes") }) },
+        topBar = {
+            TopAppBar(
+                title = { Text("Mes recettes") },
+                actions = {
+                    IconButton(onClick = { showReferences = true }) {
+                        Icon(Icons.AutoMirrored.Filled.MenuBook, contentDescription = "Recettes de référence")
+                    }
+                },
+            )
+        },
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = { showCreateDialog = true },
@@ -95,7 +106,8 @@ fun RecipeListScreen(onOpenRecipe: (Long) -> Unit) {
                     message = if (query.isBlank()) "Aucune recette pour l'instant."
                     else "Aucune recette ne correspond à cette recherche.",
                     hint = if (query.isBlank())
-                        "Commencez par créer une recette, puis composez sa maische et son houblonnage."
+                        "Commencez par créer une recette, puis composez sa maische et son houblonnage. " +
+                            "Vous pouvez aussi partir d'une recette de référence (icône livre en haut)."
                     else null,
                 )
             } else {
@@ -124,6 +136,17 @@ fun RecipeListScreen(onOpenRecipe: (Long) -> Unit) {
                 showCreateDialog = false
                 scope.launch { onOpenRecipe(viewModel.createRecipe(name)) }
             },
+        )
+    }
+
+    if (showReferences) {
+        ReferenceRecipeSheet(
+            references = viewModel.referenceRecipes,
+            onPick = { ref ->
+                showReferences = false
+                scope.launch { onOpenRecipe(viewModel.importReference(ref)) }
+            },
+            onDismiss = { showReferences = false },
         )
     }
 
