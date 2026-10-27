@@ -1,30 +1,30 @@
 ---
-name: Signaler un bug
-about: Un comportement anormal ou un calcul erroné
+name: Bug report
+about: Unexpected behaviour or a wrong calculation
 title: "[Bug] "
 labels: bug
 ---
 
 ## Description
-Décrivez le problème en quelques phrases.
+Describe the problem in a few sentences.
 
-## Étapes pour reproduire
+## Steps to reproduce
 1. …
 2. …
 3. …
 
-## Comportement attendu
-Ce qui aurait dû se passer.
+## Expected behaviour
+What should have happened.
 
-## Comportement observé
-Ce qui s'est réellement passé. Ajoutez une capture d'écran si c'est utile.
+## Actual behaviour
+What actually happened. Add a screenshot if it helps.
 
-## Erreur de calcul (le cas échéant)
-- Indicateur concerné (OG, IBU, couleur, pH…) :
-- Valeur obtenue :
-- Valeur attendue et source (logiciel, formule, référence) :
+## Calculation error (if applicable)
+- Affected metric (OG, IBU, colour, pH…):
+- Value obtained:
+- Expected value and source (software, formula, reference):
 
-## Environnement
-- Version de l'application :
-- Appareil :
-- Version d'Android :
+## Environment
+- App version:
+- Device:
+- Android version:

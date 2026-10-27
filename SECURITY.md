@@ -1,20 +1,20 @@
-# Politique de sécurité
+# Security Policy
 
-## Versions prises en charge
+## Supported versions
 
-Seule la dernière version publiée reçoit des correctifs de sécurité.
+Only the latest released version receives security fixes.
 
-| Version | Prise en charge |
+| Version | Supported |
 |---|---|
 | 1.0 | ✅ |
 
-## Signaler une vulnérabilité
+## Reporting a vulnerability
 
-Merci de **ne pas** ouvrir d'issue publique pour une faille de sécurité.
+Please **do not** open a public issue for a security vulnerability.
 
-Utilisez plutôt le signalement privé de GitHub : onglet **Security** du dépôt, puis
-**Report a vulnerability**. Indiquez la version concernée, une description du problème et les
-étapes permettant de le reproduire.
+Use GitHub's private reporting instead: go to the repository's **Security** tab, then
+**Report a vulnerability**. Include the affected version, a description of the problem and the
+steps to reproduce it.
 
-Vous recevrez une réponse dès que possible ; un correctif sera publié puis la vulnérabilité
-rendue publique une fois corrigée.
+You will get a reply as soon as possible; a fix will be released and the vulnerability disclosed
+once it has been addressed.

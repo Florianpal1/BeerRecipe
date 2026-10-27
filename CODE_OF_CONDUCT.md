@@ -1,40 +1,38 @@
-# Code de conduite
+# Code of Conduct
 
-## Notre engagement
+## Our pledge
 
-En tant que membres, contributeurs et responsables, nous nous engageons à faire de la
-participation à ce projet une expérience sans harcèlement pour tout le monde, quels que soient
-l'âge, la taille, le handicap, l'origine ethnique, l'identité et l'expression de genre, le niveau
-d'expérience, l'éducation, le statut socio-économique, la nationalité, l'apparence, la religion
-ou l'orientation sexuelle.
+As members, contributors and maintainers, we pledge to make participation in this project a
+harassment-free experience for everyone, regardless of age, body size, disability, ethnicity,
+gender identity and expression, level of experience, education, socio-economic status,
+nationality, personal appearance, religion or sexual orientation.
 
-## Nos standards
+## Our standards
 
-Comportements attendus :
-- faire preuve de bienveillance et d'empathie ;
-- respecter les opinions, points de vue et expériences différents ;
-- donner et accepter les critiques constructives avec élégance ;
-- assumer ses erreurs et en tirer des leçons ;
-- privilégier ce qui est le mieux pour la communauté.
+Expected behaviour:
+- showing kindness and empathy;
+- respecting differing opinions, viewpoints and experiences;
+- giving and gracefully accepting constructive feedback;
+- taking responsibility for our mistakes and learning from them;
+- focusing on what is best for the community.
 
-Comportements inacceptables :
-- langage ou images à caractère sexuel, avances non sollicitées ;
-- trolling, commentaires insultants ou désobligeants, attaques personnelles ou politiques ;
-- harcèlement public ou privé ;
-- publication d'informations privées d'autrui sans son autorisation explicite ;
-- toute autre conduite raisonnablement considérée comme inappropriée dans un cadre professionnel.
+Unacceptable behaviour:
+- sexualised language or imagery, and unwelcome sexual attention or advances;
+- trolling, insulting or derogatory comments, and personal or political attacks;
+- public or private harassment;
+- publishing others' private information without their explicit permission;
+- any other conduct that could reasonably be considered inappropriate in a professional setting.
 
-## Application
+## Enforcement
 
-Les responsables du projet clarifient et font respecter ces standards. Ils peuvent retirer,
-modifier ou refuser commentaires, commits, code, issues et autres contributions qui ne les
-respectent pas.
+Project maintainers are responsible for clarifying and enforcing these standards. They may
+remove, edit or reject comments, commits, code, issues and other contributions that do not
+follow them.
 
-Tout comportement inacceptable peut être signalé au responsable du projet via son profil GitHub
-[@Florianpal1](https://github.com/Florianpal1). Les signalements sont traités avec
-confidentialité.
+Unacceptable behaviour can be reported to the project maintainer through their GitHub profile,
+[@Florianpal1](https://github.com/Florianpal1). All reports are handled confidentially.
 
 ## Attribution
 
-Ce code de conduite est adapté du [Contributor Covenant](https://www.contributor-covenant.org),
+This Code of Conduct is adapted from the [Contributor Covenant](https://www.contributor-covenant.org),
 version 2.1.

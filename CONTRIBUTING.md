@@ -1,53 +1,51 @@
-# Contribuer à Beer Recipe
+# Contributing to Beer Recipe
 
-Merci de l'intérêt que vous portez au projet ! Ce guide explique comment proposer une
-modification.
+Thanks for your interest in the project! This guide explains how to propose a change.
 
-## Signaler un bug ou proposer une idée
+## Reporting a bug or suggesting an idea
 
-Ouvrez une [issue](https://github.com/Florianpal1/BeerRecipe/issues) en utilisant le modèle
-adapté. Pour un bug, précisez la version d'Android, l'appareil, les étapes pour le reproduire et,
-pour une erreur de calcul, les valeurs attendues ainsi que leur source (logiciel de brassage,
-formule publiée…).
+Open an [issue](https://github.com/Florianpal1/BeerRecipe/issues) using the matching template.
+For a bug, include the Android version, the device, the steps to reproduce it and, for a
+calculation error, the expected values and their source (brewing software, published formula…).
 
-## Proposer une modification
+## Proposing a change
 
-1. Forkez le dépôt et créez une branche depuis `master` :
-   `git checkout -b feat/ma-fonctionnalite`
-2. Faites vos modifications.
-3. Vérifiez que le projet compile et que les tests passent :
+1. Fork the repository and create a branch from `master`:
+   `git checkout -b feat/my-feature`
+2. Make your changes.
+3. Check that the project builds and the tests pass:
    ```bash
    ./gradlew assembleDebug test
    ```
-4. Ouvrez une pull request en décrivant le changement et la façon dont vous l'avez testé.
+4. Open a pull request describing the change and how you tested it.
 
-## Conventions de code
+## Code conventions
 
-- Kotlin, en suivant le style configuré dans `.idea/codeStyles` (formatage Android Studio).
-- Commentaires et textes de l'interface en **français**.
-- Le moteur de calcul (`domain/calc`) et le conseiller (`domain/advisor`) restent indépendants de
-  Room et d'Android : toute nouvelle formule doit être accompagnée de tests unitaires dans
-  `app/src/test`, avec la source de la formule en commentaire.
-- Toute modification d'une entité Room passe par une montée de version de `AppDatabase`, une
-  migration, et le schéma généré dans `app/schemas/` doit être commité.
+- Kotlin, following the style configured in `.idea/codeStyles` (Android Studio formatter).
+- Code comments and UI strings are written in **French**, like the rest of the codebase.
+- The calculation engine (`domain/calc`) and the advisor (`domain/advisor`) stay independent of
+  Room and Android: every new formula must come with unit tests in `app/src/test`, with the
+  formula's source cited in a comment.
+- Any change to a Room entity requires bumping the `AppDatabase` version, adding a migration, and
+  committing the generated schema in `app/schemas/`.
 
-## Messages de commit
+## Commit messages
 
-Messages en français, à l'impératif ou au nom, avec une première ligne courte (≈ 50 caractères)
-décrivant le changement, suivie si besoin d'un paragraphe expliquant le pourquoi.
+Keep the first line short (≈ 50 characters) and describing the change, followed if needed by a
+paragraph explaining why.
 
 ```
-Ajoute la formule IBU de Daniels
+Add the Daniels IBU formula
 
-Certains brasseurs comparent leurs résultats avec des logiciels
-qui l'utilisent par défaut.
+Some brewers compare their results with software
+that uses it by default.
 ```
 
-## Licence
+## License
 
-Le projet est distribué sous [GPL-3.0](LICENSE). En proposant une contribution, vous acceptez
-qu'elle soit publiée sous cette même licence.
+The project is distributed under the [GPL-3.0](LICENSE). By submitting a contribution, you agree
+that it will be published under the same license.
 
-## Code de conduite
+## Code of conduct
 
-En participant, vous vous engagez à respecter le [code de conduite](CODE_OF_CONDUCT.md).
+By participating, you agree to abide by the [code of conduct](CODE_OF_CONDUCT.md).

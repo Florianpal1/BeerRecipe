@@ -1,57 +1,58 @@
 # 🍺 Beer Recipe
 
-[![Licence : GPL v3](https://img.shields.io/badge/licence-GPLv3-blue.svg)](LICENSE)
+[![License: GPL v3](https://img.shields.io/badge/license-GPLv3-blue.svg)](LICENSE)
 
-Application Android de conception de recettes de bière pour le brassage amateur en tout grain.
-Elle calcule densités, amertume, couleur, pH d'empâtage et volumes d'eau, compare la recette au
-style visé et propose des corrections chiffrées.
+An Android app for designing all-grain homebrew beer recipes. It calculates gravities, bitterness,
+colour, mash pH and water volumes, compares the recipe against the target style and suggests
+quantified corrections.
 
-> Application entièrement hors ligne : toutes les données restent sur l'appareil (base Room locale).
+> Fully offline: all data stays on the device (local Room database).
+>
+> The user interface is currently in French.
 
-## Fonctionnalités
+## Features
 
-### Recettes
-- Création, duplication, mise en favori et suppression de recettes
-- Mise à l'échelle d'une recette vers un nouveau volume
-- Édition par onglets : **Résumé**, **Maque**, **Houblons**, **Levures**, **Additifs**, **Procédé**, **Journal**
-- Paliers d'empâtage et étapes de fermentation
-- Journal de brassage : suivi des sessions et des mesures réelles
+### Recipes
+- Create, duplicate, favourite and delete recipes
+- Scale a recipe to a new batch volume
+- Tabbed editor: **Summary**, **Grain bill**, **Hops**, **Yeasts**, **Additives**, **Process**, **Log**
+- Mash steps and fermentation steps
+- Brew log: track brew sessions and actual measurements
 
-### Calculs
-| Indicateur | Méthode |
+### Calculations
+| Metric | Method |
 |---|---|
-| Densités initiale et finale (OG / FG) | Points d'extrait × rendement de l'installation, atténuation de la part fermentescible seulement |
-| Alcool (ABV) | À partir de l'OG et de la FG |
-| Amertume (IBU) | **Tinseth**, **Rager** ou **Garetz**, avec facteurs de forme (pellets, cryo, cônes…), premier moût, whirlpool selon la température, houblonnage à cru |
-| Couleur | Formule de **Morey**, affichage en EBC avec rendu de la teinte |
-| pH d'empâtage | Modèle par malt : pH en eau distillée et pouvoir tampon, estimés d'après le type et la couleur quand la fiche ne les précise pas |
-| Volumes d'eau | Du concassage à l'embouteillage, pertes de l'installation comprises |
-| Levure | Taux d'ensemencement : cellules nécessaires contre cellules apportées |
-| Refermentation | Sucre de resucrage (saccharose ou dextrose) selon les volumes de CO₂ visés |
-| Coût | Coût total et coût au litre |
+| Original and final gravity (OG / FG) | Extract points × equipment efficiency; only the fermentable share is attenuated |
+| Alcohol (ABV) | From OG and FG |
+| Bitterness (IBU) | **Tinseth**, **Rager** or **Garetz**, with hop form factors (pellets, cryo, whole cones…), first wort, temperature-dependent whirlpool, dry hopping |
+| Colour | **Morey** formula, shown in EBC with a rendered colour swatch |
+| Mash pH | Per-malt model: distilled-water pH and buffering capacity, estimated from malt type and colour when the ingredient sheet doesn't specify them |
+| Water volumes | From milling to bottling, including equipment losses |
+| Yeast | Pitch rate: cells required vs. cells pitched |
+| Bottle conditioning | Priming sugar (sucrose or dextrose) for the target CO₂ volumes |
+| Cost | Total cost and cost per litre |
 
-### Conseiller de recette
-Le conseiller compare les statistiques calculées aux plages du style et transforme chaque écart en
-geste concret : combien de grammes de quel malt, combien de millilitres d'acide, quel volume ou
-quelle température. Les quantités proposées sont obtenues en inversant les formules du moteur de
-calcul. Il vérifie notamment la densité, l'amertume, la couleur, le pH, la fermentation, la maque,
-l'installation et l'eau.
+### Recipe advisor
+The advisor compares the calculated stats with the style ranges and turns every deviation into a
+concrete action: how many grams of which malt, how many millilitres of acid, which volume or which
+temperature. Suggested quantities are obtained by inverting the calculation engine's formulas.
+It checks gravity, bitterness, colour, pH, fermentation, grain bill, equipment and water.
 
 ### Catalogue
-Fiches modifiables, préremplies au premier lancement :
-- Malts, houblons, levures et additifs
-- Styles du guide **BJCP 2021**, couleurs converties en EBC
-- Profils d'eau
+Editable ingredient sheets, pre-filled on first launch:
+- Malts, hops, yeasts and additives
+- **BJCP 2021** style guidelines, colours converted to EBC
+- Water profiles
 
-### Installations
-Description de son matériel (volumes, pertes, rendement…) utilisée par les calculs de chaque recette.
+### Equipment
+Describe your brewing setup (volumes, losses, efficiency…), used by each recipe's calculations.
 
-## Stack technique
+## Tech stack
 
 - **Kotlin** · **Jetpack Compose** · **Material 3**
-- **Room** (KSP) pour la persistance, schémas exportés dans `app/schemas/`
-- **Navigation Compose**, **ViewModel** et **Coroutines / Flow**
-- JUnit 4 pour les tests unitaires
+- **Room** (KSP) for persistence, schemas exported to `app/schemas/`
+- **Navigation Compose**, **ViewModel** and **Coroutines / Flow**
+- JUnit 4 for unit tests
 
 | | Version |
 |---|---|
@@ -60,28 +61,28 @@ Description de son matériel (volumes, pertes, rendement…) utilisée par les c
 | Kotlin | 2.2.10 |
 | `minSdk` / `targetSdk` | 36 / 37 |
 
-## Démarrage
+## Getting started
 
-### Prérequis
-- Android Studio récent, compatible AGP 9.4
-- JDK 17 ou plus récent pour lancer Gradle
-- Un appareil ou un émulateur sous Android 16 (API 36) au minimum
+### Requirements
+- A recent Android Studio release supporting AGP 9.4
+- JDK 17 or newer to run Gradle
+- A device or emulator running Android 16 (API 36) or later
 
-### Compiler et installer
+### Build and install
 
 ```bash
 git clone https://github.com/Florianpal1/BeerRecipe.git
 cd BeerRecipe
-./gradlew assembleDebug        # construit l'APK de debug
-./gradlew installDebug         # installe sur l'appareil connecté
+./gradlew assembleDebug        # build the debug APK
+./gradlew installDebug         # install on the connected device
 ```
 
-Ou ouvrir le dossier dans Android Studio et lancer la configuration `app`.
+Or open the folder in Android Studio and run the `app` configuration.
 
 ### Tests
 
 ```bash
-./gradlew test                 # tests unitaires (moteur de calcul, conseiller, catalogue)
+./gradlew test                 # unit tests (calculation engine, advisor, catalogue)
 ```
 
 ## Architecture
@@ -89,36 +90,35 @@ Ou ouvrir le dossier dans Android Studio et lancer la configuration `app`.
 ```
 app/src/main/java/fr/florianpal/beerrecipe/
 ├── data/
-│   ├── dao/          # Accès Room
-│   ├── db/           # Base de données et convertisseurs
-│   ├── entity/       # Entités Room et mappers
-│   ├── repository/   # BrewRepository, point d'entrée unique des données
-│   └── seed/         # Catalogue initial (malts, houblons, levures, styles…)
+│   ├── dao/          # Room DAOs
+│   ├── db/           # Database and type converters
+│   ├── entity/       # Room entities and mappers
+│   ├── repository/   # BrewRepository, single entry point to the data
+│   └── seed/         # Initial catalogue (malts, hops, yeasts, styles…)
 ├── domain/
-│   ├── advisor/      # Conseiller de recette
-│   ├── calc/         # Moteur de calcul : densité, IBU, couleur, pH…
-│   └── model/        # Énumérations et unités
+│   ├── advisor/      # Recipe advisor
+│   ├── calc/         # Calculation engine: gravity, IBU, colour, pH…
+│   └── model/        # Enums and units
 └── ui/
-    ├── common/       # Composants partagés
-    ├── navigation/   # Navigation et barre d'onglets
-    ├── screens/      # Recettes, catalogue, installations, styles
+    ├── common/       # Shared components
+    ├── navigation/   # Navigation and bottom bar
+    ├── screens/      # Recipes, catalogue, equipment, styles
     └── theme/
 ```
 
-Le moteur de calcul (`domain/calc`) ne dépend ni de Room ni de l'interface : il prend un
-`RecipeContext` et rend un `RecipeStats`, ce qui le rend directement testable.
+The calculation engine (`domain/calc`) depends on neither Room nor the UI: it takes a
+`RecipeContext` and returns a `RecipeStats`, which makes it directly testable.
 
-## Contribuer
+## Contributing
 
-Les contributions sont les bienvenues. Voir [CONTRIBUTING.md](CONTRIBUTING.md) et le
-[code de conduite](CODE_OF_CONDUCT.md). L'historique des versions se trouve dans
-[CHANGELOG.md](CHANGELOG.md).
+Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) and the
+[code of conduct](CODE_OF_CONDUCT.md). Release history is in [CHANGELOG.md](CHANGELOG.md).
 
-## Licence
+## License
 
 Copyright (C) 2026 Florianpal1
 
-Ce programme est un logiciel libre distribué sous les termes de la
-[licence publique générale GNU, version 3](LICENSE) (GPL-3.0) : vous pouvez le redistribuer et le
-modifier, à condition que toute version dérivée distribuée reste sous la même licence et que son
-code source soit fourni. Il est livré **sans aucune garantie**.
+This program is free software, distributed under the terms of the
+[GNU General Public License, version 3](LICENSE) (GPL-3.0): you may redistribute and modify it,
+provided that any distributed derivative work stays under the same license and ships with its
+source code. It comes **without any warranty**.

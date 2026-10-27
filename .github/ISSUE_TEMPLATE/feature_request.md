@@ -1,18 +1,18 @@
 ---
-name: Proposer une fonctionnalité
-about: Une idée pour améliorer l'application
-title: "[Idée] "
+name: Feature request
+about: An idea to improve the app
+title: "[Feature] "
 labels: enhancement
 ---
 
-## Besoin
-Quel problème cette fonctionnalité résoudrait-elle ? Dans quelle situation de brassage ?
+## Need
+What problem would this feature solve? In which brewing situation?
 
-## Solution envisagée
-Décrivez ce que vous aimeriez voir dans l'application.
+## Proposed solution
+Describe what you would like to see in the app.
 
 ## Alternatives
-Autres solutions ou contournements envisagés.
+Other solutions or workarounds you have considered.
 
-## Informations complémentaires
-Formules, références, captures d'autres logiciels…
+## Additional context
+Formulas, references, screenshots from other software…
