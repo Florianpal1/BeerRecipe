@@ -1,0 +1,7 @@
+<resources>
+    <!-- L'habillage réel est défini en Compose ; ce thème ne sert qu'au démarrage. -->
+    <style name="Theme.BeerRecipe" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+</resources>
