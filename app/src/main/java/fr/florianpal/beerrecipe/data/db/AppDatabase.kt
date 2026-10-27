@@ -50,7 +50,7 @@ import fr.florianpal.beerrecipe.data.entity.Yeast
         FermentationStep::class,
         BrewSession::class,
     ],
-    version = 4,
+    version = 5,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)
@@ -94,6 +94,13 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
+        /** Version 5 : jour d'ajout des houblonnages à cru. */
+        val MIGRATION_4_5 = object : Migration(4, 5) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE recipe_hop ADD COLUMN dryHopDay INTEGER")
+            }
+        }
+
         @Volatile private var instance: AppDatabase? = null
 
         fun get(context: Context): AppDatabase = instance ?: synchronized(this) {
@@ -102,7 +109,7 @@ abstract class AppDatabase : RoomDatabase() {
                 AppDatabase::class.java,
                 "beer-recipe.db",
             )
-                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
                 // Les clés étrangères pilotent la suppression en cascade des lignes de recette.
                 .build()
                 .also { instance = it }

@@ -119,6 +119,11 @@ data class RecipeHop(
     val timeMin: Int = 60,
     /** Température du whirlpool, en °C : elle commande l'isomérisation résiduelle. */
     val temperatureC: Double = 80.0,
+    /**
+     * Houblonnage à cru : jour d'ajout, compté depuis l'ensemencement (J0). Vide quand le
+     * moment n'est pas fixé ou que le houblon n'est pas ajouté à cru.
+     */
+    val dryHopDay: Int? = null,
     /** Prix au kilo, facultatif. */
     val pricePerKg: Double? = null,
     val position: Int = 0,

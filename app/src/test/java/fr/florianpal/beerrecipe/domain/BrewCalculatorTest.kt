@@ -400,4 +400,13 @@ class BrewCalculatorTest {
         assertEquals(0.0, calibrated.boilOffRateLPerHour, 0.001)
         assertEquals(6.5, calibrated.batchVolumeFromWater(7.0, 1.2), 0.001)
     }
+
+    @Test
+    fun `les houblonnages a cru se rangent par jour d ajout`() {
+        val late = RecipeHop(id = 1, recipeId = 1, name = "Tardif", use = HopUse.DRY_HOP, timeMin = 3, dryHopDay = 8)
+        val early = RecipeHop(id = 2, recipeId = 1, name = "Précoce", use = HopUse.DRY_HOP, timeMin = 4, dryHopDay = 3)
+        val boil = RecipeHop(id = 3, recipeId = 1, name = "Amérisant", use = HopUse.BOIL, timeMin = 60)
+        val details = RecipeWithDetails(recipe = Recipe(name = "Test"), hops = listOf(late, early, boil))
+        assertEquals(listOf("Amérisant", "Précoce", "Tardif"), details.sortedHops.map { it.name })
+    }
 }

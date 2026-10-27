@@ -20,7 +20,9 @@ data class RecipeWithDetails(
     val fermentationSteps: List<FermentationStep> = emptyList(),
 ) {
     val sortedMalts get() = malts.sortedWith(compareBy({ it.position }, { -it.amountG }))
-    val sortedHops get() = hops.sortedWith(compareBy({ it.use.ordinal }, { -it.timeMin }, { it.position }))
+    val sortedHops get() = hops.sortedWith(
+        compareBy({ it.use.ordinal }, { it.dryHopDay ?: 0 }, { -it.timeMin }, { it.position })
+    )
     val sortedYeasts get() = yeasts.sortedBy { it.position }
     val sortedAdditives get() = additives.sortedWith(compareBy({ it.stage.ordinal }, { it.position }))
     val sortedMashSteps get() = mashSteps.sortedBy { it.position }

@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import fr.florianpal.beerrecipe.data.entity.Hop
+import fr.florianpal.beerrecipe.data.entity.RecipeHop
 import fr.florianpal.beerrecipe.domain.model.Format
 import fr.florianpal.beerrecipe.domain.model.HopForm
 import fr.florianpal.beerrecipe.domain.model.HopUse
@@ -71,6 +72,7 @@ fun RecipeHopTab(
                         val total = hops.filter { it.use == use }.sumOf { it.amountG }
                         if (total > 0) KeyValueRow(use.label, Format.grams(total))
                     }
+                    DryHopSchedule(hops)
                 }
             }
         }
@@ -86,6 +88,7 @@ fun RecipeHopTab(
                     if (hop.use != HopUse.DRY_HOP && hop.use != HopUse.MASH) {
                         append(" ").append(hop.timeMin).append(" min")
                     } else if (hop.use == HopUse.DRY_HOP) {
+                        hop.dryHopDay?.let { append(" J").append(it).append(",") }
                         append(" ").append(hop.timeMin).append(" j")
                     }
                     if (hop.origin.isNotBlank()) append(" · ").append(hop.origin)
@@ -109,8 +112,15 @@ fun RecipeHopTab(
                 }
                 EnumDropdown(
                     "Moment d'ajout", HopUse.entries, hop.use,
-                    onSelect = { v -> viewModel.saveHop(hop.copy(use = v)) })
+                    onSelect = { v -> viewModel.saveHop(hop.withUse(v)) })
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    if (hop.use == HopUse.DRY_HOP) {
+                        IntField(
+                            "Jour d'ajout (J)", hop.dryHopDay ?: 0,
+                            { v -> viewModel.saveHop(hop.copy(dryHopDay = v)) },
+                            modifier = Modifier.weight(1f),
+                        )
+                    }
                     IntField(
                         if (hop.use == HopUse.DRY_HOP) "Durée" else "Temps d'infusion",
                         hop.timeMin,
@@ -125,6 +135,14 @@ fun RecipeHopTab(
                             suffix = "°C", decimals = 0, modifier = Modifier.weight(1f),
                         )
                     }
+                }
+                if (hop.use == HopUse.DRY_HOP) {
+                    Text(
+                        "Jour compté depuis l'ajout de la levure (J0). Hazy : pendant la fermentation " +
+                            "active, vers J2–J3. Autres styles : une fois la densité stable.",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                 }
                 EnumDropdown(
                     "Forme", HopForm.entries, hop.form,
@@ -186,6 +204,31 @@ fun RecipeHopTab(
                 viewModel.addBlankHop()
                 showPicker = false
             },
+        )
+    }
+}
+
+/**
+ * Change le moment d'ajout. Passer en houblonnage à cru convertit la durée (des minutes
+ * d'ébullition deviendraient des semaines) et propose J3, le moment le plus courant.
+ */
+private fun RecipeHop.withUse(use: HopUse): RecipeHop = when {
+    use == this.use -> this
+    use == HopUse.DRY_HOP -> copy(use = use, timeMin = timeMin.coerceAtMost(4), dryHopDay = dryHopDay ?: 3)
+    this.use == HopUse.DRY_HOP -> copy(use = use, timeMin = 15, dryHopDay = null)
+    else -> copy(use = use)
+}
+
+/** Calendrier des ajouts à cru, regroupés par jour : ce qu'il faut verser, et quand. */
+@Composable
+private fun DryHopSchedule(hops: List<RecipeHop>) {
+    val byDay = hops.filter { it.use == HopUse.DRY_HOP }.groupBy { it.dryHopDay }
+    if (byDay.isEmpty()) return
+    Text("Calendrier du houblonnage à cru", style = MaterialTheme.typography.labelLarge)
+    byDay.toSortedMap(compareBy(nullsLast()) { it }).forEach { (day, atDay) ->
+        KeyValueRow(
+            day?.let { "J$it" } ?: "Jour non fixé",
+            atDay.joinToString(", ") { "${it.name} ${Format.grams(it.amountG)} (${it.timeMin} j)" },
         )
     }
 }
