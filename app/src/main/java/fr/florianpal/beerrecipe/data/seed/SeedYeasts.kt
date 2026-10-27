@@ -127,7 +127,7 @@ object SeedYeasts {
         // --- Lallemand (sèches) ----------------------------------------------------
         yeast("Verdant IPA", "Lallemand", "Verdant", YeastType.ALE, YeastForm.DRY,
             18.0..23.0, 75.0..82.0, Flocculation.MEDIUM, 11.0,
-            listOf("fruits à noyau", "tropical", "malté"),
+            listOf("fruits à noyau", "fruits tropicaux", "malté"),
             listOf("NEIPA", "American Pale Ale"),
             packageSize = 11.0,
             notes = "Souche anglaise moderne : laisse du corps, idéale en NEIPA."),

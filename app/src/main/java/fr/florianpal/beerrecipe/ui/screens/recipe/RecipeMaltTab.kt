@@ -58,7 +58,7 @@ fun RecipeMaltTab(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item {
-            SectionCard("Composition de la maque", subtitle = Format.kg(stats.totalFermentableKg) + " au total") {
+            SectionCard("Composition de la maische", subtitle = Format.kg(stats.totalFermentableKg) + " au total") {
                 if (malts.isEmpty()) {
                     Text("Aucun fermentescible.", style = MaterialTheme.typography.bodyMedium)
                 } else {
@@ -184,8 +184,9 @@ fun RecipeMaltTab(
                     if (m.origin.isNotBlank()) "· ${m.origin}" else ""
             },
             searchText = { "${it.name} ${it.origin} ${it.type.label} ${it.associatedStyles.joinToString(" ")}" },
-            onPick = {
-                viewModel.addMalt(it)
+            amountOf = { PickAmount(default = 1000.0, suffix = "g", decimals = 0) },
+            onPick = { malt, amount ->
+                viewModel.addMalt(malt, amount)
                 showPicker = false
             },
             onDismiss = { showPicker = false },
@@ -197,7 +198,7 @@ fun RecipeMaltTab(
     }
 }
 
-/** Barre empilée montrant la part de chaque malt dans la maque. */
+/** Barre empilée montrant la part de chaque malt dans la maische. */
 @Composable
 private fun GrainBillBar(state: RecipeDetailUiState) {
     val contributions = state.stats.maltContributions.filter { it.amountG > 0 }

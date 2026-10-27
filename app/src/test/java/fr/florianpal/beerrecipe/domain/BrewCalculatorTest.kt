@@ -10,6 +10,8 @@ import fr.florianpal.beerrecipe.data.entity.RecipeWithDetails
 import fr.florianpal.beerrecipe.data.entity.RecipeYeast
 import fr.florianpal.beerrecipe.data.entity.WaterProfile
 import fr.florianpal.beerrecipe.domain.calc.BrewCalculator
+import fr.florianpal.beerrecipe.domain.calc.EquipmentCalibration
+import fr.florianpal.beerrecipe.domain.calc.EquipmentSizing
 import fr.florianpal.beerrecipe.domain.calc.IbuCalculator
 import fr.florianpal.beerrecipe.domain.model.ColorFormula
 import fr.florianpal.beerrecipe.domain.model.FermentableType
@@ -136,7 +138,7 @@ class BrewCalculatorTest {
     }
 
     @Test
-    fun `une maque de malt de base dans de l'eau pure garde son pH natif`() {
+    fun `une maische de malt de base dans de l'eau pure garde son pH natif`() {
         val malts = listOf(paleMalt(5000.0, ebc = 4.0))
         val eauPure = WaterProfile(name = "Osmosée")
         val breakdown = BrewCalculator.estimateMashPh(malts, eauPure, 15.0, emptyList())
@@ -156,7 +158,7 @@ class BrewCalculatorTest {
     }
 
     @Test
-    fun `les malts torrefies acidifient la maque`() {
+    fun `les malts torrefies acidifient la maische`() {
         val base = listOf(paleMalt(5000.0, ebc = 4.0))
         val avecTorrefie = base + RecipeMalt(
             recipeId = 1, name = "Black", type = FermentableType.ROASTED,
@@ -265,5 +267,137 @@ class BrewCalculatorTest {
         // 0.75 M/mL/°P × 20 000 mL × ~14.3 °P ≈ 214 milliards
         assertEquals(214.0, stats.pitching.requiredBillionCells, 6.0)
         assertEquals(115.0, stats.pitching.providedBillionCells, 0.1)
+    }
+
+    @Test
+    fun `eau de depart fixe donne le volume en fermenteur en remontant les pertes`() {
+        // 30 L − 5 kg × 1 L/kg − 0,5 L de volume mort = 24,5 L avant ébullition,
+        // − 3 L évaporés = 21,5 L chaud, × 0,96 de rétraction − 1,5 L de pertes = 19,14 L.
+        val eq = Equipment(name = "BIAB", fixedMashWaterL = 30.0)
+        assertEquals(19.14, eq.batchVolumeFromWater(30.0, 5.0), 0.01)
+    }
+
+    @Test
+    fun `eau de depart fixe pilote les volumes de la recette`() {
+        val eq = Equipment(name = "BIAB", fixedMashWaterL = 30.0)
+        val stats = BrewCalculator.compute(context(malts = listOf(paleMalt(5000.0)), equipment = eq))
+        assertEquals(19.14, stats.water.batchVolumeL, 0.01)
+        assertEquals(30.0, stats.water.totalWaterL, 0.01)
+
+        // Plus de grain absorbe plus d'eau : 1 kg de plus coûte 0,96 L en fermenteur.
+        val heavier = BrewCalculator.compute(context(malts = listOf(paleMalt(6000.0)), equipment = eq))
+        assertEquals(18.18, heavier.water.batchVolumeL, 0.01)
+    }
+
+    @Test
+    fun `sans eau de depart le volume de la recette reste la reference`() {
+        val stats = BrewCalculator.compute(context(malts = listOf(paleMalt(5000.0))))
+        assertEquals(20.0, stats.water.batchVolumeL, 0.001)
+    }
+
+    @Test
+    fun `eau de depart fixe empate a pleine eau sans rincage`() {
+        val eq = Equipment(name = "BIAB", fixedMashWaterL = 30.0)
+        val ctx = context(malts = listOf(paleMalt(5000.0)), equipment = eq)
+        val stats = BrewCalculator.compute(ctx)
+        // 30 L pour 5 kg : 6 L/kg, toute l'eau à l'empâtage.
+        assertEquals(6.0, ctx.mashThicknessLPerKg, 0.001)
+        assertEquals(30.0, stats.water.mashWaterL, 0.01)
+        assertEquals(0.0, stats.water.spargeWaterL, 0.01)
+    }
+
+    @Test
+    fun `changer l eau de depart emporte les pertes au prorata`() {
+        val eq = Equipment(
+            name = "BIAB", fixedMashWaterL = 30.0, boilOffRateLPerHour = 3.0,
+            mashTunDeadspaceL = 0.5, trubLossL = 1.5, fermenterLossL = 1.0,
+        ).withFixedWater(45.0)
+        assertEquals(45.0, eq.fixedMashWaterL!!, 0.001)
+        assertEquals(4.5, eq.boilOffRateLPerHour, 0.001)
+        assertEquals(0.75, eq.mashTunDeadspaceL, 0.001)
+        assertEquals(2.25, eq.trubLossL, 0.001)
+        assertEquals(1.5, eq.fermenterLossL, 0.001)
+    }
+
+    @Test
+    fun `l installation en eau fixe recale brassin et epaisseur sur le grain de reference`() {
+        val eq = Equipment(name = "BIAB", fixedMashWaterL = 30.0, referenceGrainKg = 5.0).withDerivedValues()
+        assertEquals(19.14, eq.batchVolumeL, 0.01)
+        assertEquals(6.0, eq.mashThicknessLPerKg, 0.001)
+    }
+
+    @Test
+    fun `tailles de cuves conseillees gardent la marge de travail`() {
+        // 5 kg à 3 L/kg : 15 L d'eau + 5 × 0,67 L de grain = 18,35 L, × 1,15 → 22 L.
+        // Avant ébullition : (20 + 1,5) / 0,96 + 3 = 25,4 L, × 1,25 → 32 L. Fermenteur : 20 × 1,25 = 25 L.
+        val vessels = EquipmentSizing.vessels(Equipment(name = "Test"), 5.0)
+        assertEquals(listOf(22.0, 32.0, 25.0), vessels.map { it.suggestedL })
+        assertEquals(18.35, vessels[0].neededL, 0.01)
+
+        val tight = EquipmentSizing.vessels(Equipment(name = "Test", kettleVolumeL = 20.0), 5.0)
+        assertTrue(tight[1].tooSmall)
+    }
+
+    @Test
+    fun `eau de depart fixe avec rincage repartit l eau entre empatage et rincage`() {
+        // 20 L d'empâtage + 10 L de rinçage : 30 L au total, et 4 L/kg pour 5 kg.
+        val eq = Equipment(name = "BIAB", fixedMashWaterL = 20.0, spargeWaterL = 10.0)
+        val ctx = context(malts = listOf(paleMalt(5000.0)), equipment = eq)
+        val stats = BrewCalculator.compute(ctx)
+        assertEquals(4.0, ctx.mashThicknessLPerKg, 0.001)
+        assertEquals(20.0, stats.water.mashWaterL, 0.01)
+        assertEquals(10.0, stats.water.spargeWaterL, 0.01)
+        // Le rinçage finit dans la cuve : le volume en fermenteur ne change pas.
+        assertEquals(19.14, stats.water.batchVolumeL, 0.01)
+        assertEquals(30.0, stats.water.totalWaterL, 0.01)
+    }
+
+    @Test
+    fun `changer l eau de rincage emporte aussi les pertes au prorata de l eau totale`() {
+        // 20 + 10 = 30 L, puis 20 + 20 = 40 L : les pertes sont multipliées par 4/3.
+        val eq = Equipment(name = "BIAB", fixedMashWaterL = 20.0, spargeWaterL = 10.0, boilOffRateLPerHour = 3.0)
+            .withFixedWater(20.0, spargeWaterL = 20.0)
+        assertEquals(40.0, eq.fixedTotalWaterL!!, 0.001)
+        assertEquals(4.0, eq.boilOffRateLPerHour, 0.001)
+    }
+
+    private val smallPot = Equipment(
+        name = "5 L", grainAbsorptionLPerKg = 1.0, mashTunDeadspaceL = 0.5,
+        trubLossL = 0.0, coolingShrinkagePct = 4.0, boilOffRateLPerHour = 2.0,
+    )
+
+    @Test
+    fun `etalonnage retrouve l evaporation d un brassin reel`() {
+        // 7 L versés, 1,2 kg de grain, 60 min, 4,5 L en fermenteur.
+        // Chaud : 4,5 / 0,96 = 4,6875 L ; avant ébullition : 7 − 1,2 − 0,5 = 5,3 L ; évaporation 0,6125 L/h.
+        val calibrated = EquipmentCalibration.calibrate(
+            smallPot, EquipmentCalibration.Measurement(7.0, 1.2, 60, null, 4.5),
+        )
+        assertEquals(0.6125, calibrated.boilOffRateLPerHour, 0.001)
+        assertEquals(1.0, calibrated.grainAbsorptionLPerKg, 0.001)
+
+        // L'installation étalonnée, en eau fixe 5 + 2 L, redonne bien les 4,5 L mesurés.
+        val fixed = calibrated.copy(fixedMashWaterL = 5.0, spargeWaterL = 2.0, referenceGrainKg = 1.2).withDerivedValues()
+        assertEquals(4.5, fixed.batchVolumeL, 0.001)
+    }
+
+    @Test
+    fun `etalonnage avec volume avant ebullition separe absorption et evaporation`() {
+        // 7 − 6 = 1 L retenu : 0,5 L de volume mort, 0,5 L pour 1,2 kg de grain ; 6 − 4,6875 = 1,3125 L/h.
+        val calibrated = EquipmentCalibration.calibrate(
+            smallPot, EquipmentCalibration.Measurement(7.0, 1.2, 60, 6.0, 4.5),
+        )
+        assertEquals(0.4167, calibrated.grainAbsorptionLPerKg, 0.001)
+        assertEquals(1.3125, calibrated.boilOffRateLPerHour, 0.001)
+    }
+
+    @Test
+    fun `etalonnage reduit l absorption quand le grain retiendrait plus que la realite`() {
+        // 6,5 L obtenus pour 7 L : même sans évaporation, 1 L/kg et 0,5 L de volume mort sont de trop.
+        val calibrated = EquipmentCalibration.calibrate(
+            smallPot, EquipmentCalibration.Measurement(7.0, 1.2, 60, null, 6.5),
+        )
+        assertEquals(0.0, calibrated.boilOffRateLPerHour, 0.001)
+        assertEquals(6.5, calibrated.batchVolumeFromWater(7.0, 1.2), 0.001)
     }
 }

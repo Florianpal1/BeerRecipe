@@ -30,7 +30,7 @@ object SeedWaterProfiles {
         profile("Dublin", 118.0, 4.0, 12.0, 55.0, 19.0, 160.0,
             "Alcalinité élevée, équilibrée par l'orge torréfiée de la stout."),
         profile("Munich", 77.0, 17.0, 4.0, 18.0, 8.0, 295.0,
-            "Faite pour les maques foncées : trop alcaline pour une bière pâle."),
+            "Faite pour les maisches foncées : trop alcaline pour une bière pâle."),
         profile("Londres", 52.0, 32.0, 86.0, 32.0, 34.0, 104.0,
             "Profil des porters historiques."),
         profile("Dortmund", 225.0, 40.0, 60.0, 120.0, 60.0, 220.0,

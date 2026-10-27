@@ -15,7 +15,9 @@ class EquipmentViewModel(private val repository: BrewRepository) : ViewModel() {
     val equipments: StateFlow<List<Equipment>> = repository.equipments
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
-    fun save(equipment: Equipment) = viewModelScope.launch { repository.saveEquipment(equipment) }
+    /** Enregistre l'installation, en recalant brassin et épaisseur sur l'eau de départ si elle est fixée. */
+    fun save(equipment: Equipment) =
+        viewModelScope.launch { repository.saveEquipment(equipment.withDerivedValues()) }
     fun delete(equipment: Equipment) = viewModelScope.launch { repository.deleteEquipment(equipment) }
 
     fun create() = viewModelScope.launch {

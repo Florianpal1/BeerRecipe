@@ -1,0 +1,1842 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 2,
+    "identityHash": "b3e85dbb7dd0cf05db12e3a4828c2549",
+    "entities": [
+      {
+        "tableName": "equipment",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `type` TEXT NOT NULL, `description` TEXT NOT NULL, `batchVolumeL` REAL NOT NULL, `boilTimeMin` INTEGER NOT NULL, `startWaterL` REAL, `referenceGrainKg` REAL NOT NULL DEFAULT 5.0, `mashTunVolumeL` REAL NOT NULL, `kettleVolumeL` REAL NOT NULL, `fermenterVolumeL` REAL NOT NULL, `boilOffRateLPerHour` REAL NOT NULL, `coolingShrinkagePct` REAL NOT NULL, `grainAbsorptionLPerKg` REAL NOT NULL, `mashTunDeadspaceL` REAL NOT NULL, `trubLossL` REAL NOT NULL, `fermenterLossL` REAL NOT NULL, `brewhouseEfficiencyPct` REAL NOT NULL, `hopUtilizationPct` REAL NOT NULL, `mashThicknessLPerKg` REAL NOT NULL, `mashTunHeatCapacityLEq` REAL NOT NULL, `isDefault` INTEGER NOT NULL, `notes` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "batchVolumeL",
+            "columnName": "batchVolumeL",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "boilTimeMin",
+            "columnName": "boilTimeMin",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "startWaterL",
+            "columnName": "startWaterL",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "referenceGrainKg",
+            "columnName": "referenceGrainKg",
+            "affinity": "REAL",
+            "notNull": true,
+            "defaultValue": "5.0"
+          },
+          {
+            "fieldPath": "mashTunVolumeL",
+            "columnName": "mashTunVolumeL",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "kettleVolumeL",
+            "columnName": "kettleVolumeL",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fermenterVolumeL",
+            "columnName": "fermenterVolumeL",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "boilOffRateLPerHour",
+            "columnName": "boilOffRateLPerHour",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "coolingShrinkagePct",
+            "columnName": "coolingShrinkagePct",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "grainAbsorptionLPerKg",
+            "columnName": "grainAbsorptionLPerKg",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mashTunDeadspaceL",
+            "columnName": "mashTunDeadspaceL",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "trubLossL",
+            "columnName": "trubLossL",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fermenterLossL",
+            "columnName": "fermenterLossL",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "brewhouseEfficiencyPct",
+            "columnName": "brewhouseEfficiencyPct",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hopUtilizationPct",
+            "columnName": "hopUtilizationPct",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mashThicknessLPerKg",
+            "columnName": "mashThicknessLPerKg",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mashTunHeatCapacityLEq",
+            "columnName": "mashTunHeatCapacityLEq",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isDefault",
+            "columnName": "isDefault",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "notes",
+            "columnName": "notes",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "water_profile",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `calcium` REAL NOT NULL, `magnesium` REAL NOT NULL, `sodium` REAL NOT NULL, `sulfate` REAL NOT NULL, `chloride` REAL NOT NULL, `bicarbonate` REAL NOT NULL, `ph` REAL NOT NULL, `isCustom` INTEGER NOT NULL, `notes` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "calcium",
+            "columnName": "calcium",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "magnesium",
+            "columnName": "magnesium",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sodium",
+            "columnName": "sodium",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sulfate",
+            "columnName": "sulfate",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "chloride",
+            "columnName": "chloride",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "bicarbonate",
+            "columnName": "bicarbonate",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ph",
+            "columnName": "ph",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isCustom",
+            "columnName": "isCustom",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "notes",
+            "columnName": "notes",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "beer_style",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `code` TEXT NOT NULL, `name` TEXT NOT NULL, `category` TEXT NOT NULL, `ogMin` REAL NOT NULL, `ogMax` REAL NOT NULL, `fgMin` REAL NOT NULL, `fgMax` REAL NOT NULL, `abvMin` REAL NOT NULL, `abvMax` REAL NOT NULL, `ibuMin` REAL NOT NULL, `ibuMax` REAL NOT NULL, `ebcMin` REAL NOT NULL, `ebcMax` REAL NOT NULL, `mashPhMin` REAL NOT NULL, `mashPhMax` REAL NOT NULL, `carbonationMin` REAL NOT NULL, `carbonationMax` REAL NOT NULL, `description` TEXT NOT NULL, `isCustom` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "code",
+            "columnName": "code",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "category",
+            "columnName": "category",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ogMin",
+            "columnName": "ogMin",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ogMax",
+            "columnName": "ogMax",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fgMin",
+            "columnName": "fgMin",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fgMax",
+            "columnName": "fgMax",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "abvMin",
+            "columnName": "abvMin",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "abvMax",
+            "columnName": "abvMax",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ibuMin",
+            "columnName": "ibuMin",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ibuMax",
+            "columnName": "ibuMax",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ebcMin",
+            "columnName": "ebcMin",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ebcMax",
+            "columnName": "ebcMax",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mashPhMin",
+            "columnName": "mashPhMin",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mashPhMax",
+            "columnName": "mashPhMax",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "carbonationMin",
+            "columnName": "carbonationMin",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "carbonationMax",
+            "columnName": "carbonationMax",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isCustom",
+            "columnName": "isCustom",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "malt",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `type` TEXT NOT NULL, `origin` TEXT NOT NULL, `maltster` TEXT NOT NULL, `year` INTEGER, `colorEbc` REAL NOT NULL, `extractYieldPct` REAL NOT NULL, `fermentabilityPct` REAL NOT NULL, `moisturePct` REAL NOT NULL, `diastaticPowerLintner` REAL NOT NULL, `maxBatchPct` REAL NOT NULL, `associatedStyles` TEXT NOT NULL, `distilledWaterPh` REAL, `bufferCapacity` REAL, `pricePerKg` REAL, `stockG` REAL NOT NULL, `notes` TEXT NOT NULL, `isCustom` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "origin",
+            "columnName": "origin",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "maltster",
+            "columnName": "maltster",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "year",
+            "columnName": "year",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "colorEbc",
+            "columnName": "colorEbc",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "extractYieldPct",
+            "columnName": "extractYieldPct",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fermentabilityPct",
+            "columnName": "fermentabilityPct",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "moisturePct",
+            "columnName": "moisturePct",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "diastaticPowerLintner",
+            "columnName": "diastaticPowerLintner",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "maxBatchPct",
+            "columnName": "maxBatchPct",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "associatedStyles",
+            "columnName": "associatedStyles",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "distilledWaterPh",
+            "columnName": "distilledWaterPh",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "bufferCapacity",
+            "columnName": "bufferCapacity",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "pricePerKg",
+            "columnName": "pricePerKg",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "stockG",
+            "columnName": "stockG",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "notes",
+            "columnName": "notes",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isCustom",
+            "columnName": "isCustom",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "hop",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `origin` TEXT NOT NULL, `year` INTEGER, `alphaAcidPct` REAL NOT NULL, `betaAcidPct` REAL NOT NULL, `cohumulonePct` REAL, `totalOilMlPer100g` REAL, `form` TEXT NOT NULL, `purpose` TEXT NOT NULL, `aromas` TEXT NOT NULL, `substitutes` TEXT NOT NULL, `pricePerKg` REAL, `stockG` REAL NOT NULL, `notes` TEXT NOT NULL, `isCustom` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "origin",
+            "columnName": "origin",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "year",
+            "columnName": "year",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "alphaAcidPct",
+            "columnName": "alphaAcidPct",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "betaAcidPct",
+            "columnName": "betaAcidPct",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cohumulonePct",
+            "columnName": "cohumulonePct",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "totalOilMlPer100g",
+            "columnName": "totalOilMlPer100g",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "form",
+            "columnName": "form",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "purpose",
+            "columnName": "purpose",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "aromas",
+            "columnName": "aromas",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "substitutes",
+            "columnName": "substitutes",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pricePerKg",
+            "columnName": "pricePerKg",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "stockG",
+            "columnName": "stockG",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "notes",
+            "columnName": "notes",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isCustom",
+            "columnName": "isCustom",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "yeast",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `laboratory` TEXT NOT NULL, `productId` TEXT NOT NULL, `type` TEXT NOT NULL, `form` TEXT NOT NULL, `tempMinC` REAL NOT NULL, `tempMaxC` REAL NOT NULL, `attenuationMinPct` REAL NOT NULL, `attenuationMaxPct` REAL NOT NULL, `flocculation` TEXT NOT NULL, `alcoholTolerancePct` REAL NOT NULL, `aromaProfile` TEXT NOT NULL, `popularStyles` TEXT NOT NULL, `cellsPerGramBillions` REAL NOT NULL, `pricePerUnit` REAL, `packageSizeG` REAL NOT NULL, `stockG` REAL NOT NULL, `notes` TEXT NOT NULL, `isCustom` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "laboratory",
+            "columnName": "laboratory",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "productId",
+            "columnName": "productId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "form",
+            "columnName": "form",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tempMinC",
+            "columnName": "tempMinC",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tempMaxC",
+            "columnName": "tempMaxC",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "attenuationMinPct",
+            "columnName": "attenuationMinPct",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "attenuationMaxPct",
+            "columnName": "attenuationMaxPct",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flocculation",
+            "columnName": "flocculation",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "alcoholTolerancePct",
+            "columnName": "alcoholTolerancePct",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "aromaProfile",
+            "columnName": "aromaProfile",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "popularStyles",
+            "columnName": "popularStyles",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cellsPerGramBillions",
+            "columnName": "cellsPerGramBillions",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pricePerUnit",
+            "columnName": "pricePerUnit",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "packageSizeG",
+            "columnName": "packageSizeG",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "stockG",
+            "columnName": "stockG",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "notes",
+            "columnName": "notes",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isCustom",
+            "columnName": "isCustom",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "additive",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `type` TEXT NOT NULL, `defaultStage` TEXT NOT NULL, `defaultUnit` TEXT NOT NULL, `defaultAmount` REAL NOT NULL, `acidMeqPerUnit` REAL, `calciumPpmPerGPerL` REAL NOT NULL, `magnesiumPpmPerGPerL` REAL NOT NULL, `sodiumPpmPerGPerL` REAL NOT NULL, `sulfatePpmPerGPerL` REAL NOT NULL, `chloridePpmPerGPerL` REAL NOT NULL, `bicarbonatePpmPerGPerL` REAL NOT NULL, `pricePerUnit` REAL, `stock` REAL NOT NULL, `notes` TEXT NOT NULL, `isCustom` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "defaultStage",
+            "columnName": "defaultStage",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "defaultUnit",
+            "columnName": "defaultUnit",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "defaultAmount",
+            "columnName": "defaultAmount",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "acidMeqPerUnit",
+            "columnName": "acidMeqPerUnit",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "calciumPpmPerGPerL",
+            "columnName": "calciumPpmPerGPerL",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "magnesiumPpmPerGPerL",
+            "columnName": "magnesiumPpmPerGPerL",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sodiumPpmPerGPerL",
+            "columnName": "sodiumPpmPerGPerL",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sulfatePpmPerGPerL",
+            "columnName": "sulfatePpmPerGPerL",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "chloridePpmPerGPerL",
+            "columnName": "chloridePpmPerGPerL",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "bicarbonatePpmPerGPerL",
+            "columnName": "bicarbonatePpmPerGPerL",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pricePerUnit",
+            "columnName": "pricePerUnit",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "stock",
+            "columnName": "stock",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "notes",
+            "columnName": "notes",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isCustom",
+            "columnName": "isCustom",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "recipe",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `author` TEXT NOT NULL, `styleId` INTEGER, `equipmentId` INTEGER, `batchVolumeL` REAL NOT NULL, `boilTimeMin` INTEGER NOT NULL, `efficiencyPct` REAL NOT NULL, `sourceWaterId` INTEGER, `mashThicknessLPerKg` REAL NOT NULL, `grainTempC` REAL NOT NULL, `spargeTempC` REAL NOT NULL, `ibuFormula` TEXT NOT NULL, `colorFormula` TEXT NOT NULL, `carbonationVolumes` REAL NOT NULL, `bottlingTempC` REAL NOT NULL, `notes` TEXT NOT NULL, `tastingNotes` TEXT NOT NULL, `tags` TEXT NOT NULL, `createdAt` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL, `isFavourite` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "author",
+            "columnName": "author",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "styleId",
+            "columnName": "styleId",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "equipmentId",
+            "columnName": "equipmentId",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "batchVolumeL",
+            "columnName": "batchVolumeL",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "boilTimeMin",
+            "columnName": "boilTimeMin",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "efficiencyPct",
+            "columnName": "efficiencyPct",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sourceWaterId",
+            "columnName": "sourceWaterId",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "mashThicknessLPerKg",
+            "columnName": "mashThicknessLPerKg",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "grainTempC",
+            "columnName": "grainTempC",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "spargeTempC",
+            "columnName": "spargeTempC",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ibuFormula",
+            "columnName": "ibuFormula",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "colorFormula",
+            "columnName": "colorFormula",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "carbonationVolumes",
+            "columnName": "carbonationVolumes",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "bottlingTempC",
+            "columnName": "bottlingTempC",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "notes",
+            "columnName": "notes",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tastingNotes",
+            "columnName": "tastingNotes",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tags",
+            "columnName": "tags",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "createdAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updatedAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isFavourite",
+            "columnName": "isFavourite",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_recipe_styleId",
+            "unique": false,
+            "columnNames": [
+              "styleId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_recipe_styleId` ON `${TABLE_NAME}` (`styleId`)"
+          },
+          {
+            "name": "index_recipe_equipmentId",
+            "unique": false,
+            "columnNames": [
+              "equipmentId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_recipe_equipmentId` ON `${TABLE_NAME}` (`equipmentId`)"
+          }
+        ]
+      },
+      {
+        "tableName": "recipe_malt",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `recipeId` INTEGER NOT NULL, `catalogId` INTEGER, `name` TEXT NOT NULL, `type` TEXT NOT NULL, `amountG` REAL NOT NULL, `origin` TEXT NOT NULL, `year` INTEGER, `colorEbc` REAL NOT NULL, `extractYieldPct` REAL NOT NULL, `fermentabilityPct` REAL NOT NULL, `diastaticPowerLintner` REAL NOT NULL, `associatedStyles` TEXT NOT NULL, `distilledWaterPh` REAL, `bufferCapacity` REAL, `pricePerKg` REAL, `position` INTEGER NOT NULL, `notes` TEXT NOT NULL, FOREIGN KEY(`recipeId`) REFERENCES `recipe`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "recipeId",
+            "columnName": "recipeId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "catalogId",
+            "columnName": "catalogId",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "amountG",
+            "columnName": "amountG",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "origin",
+            "columnName": "origin",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "year",
+            "columnName": "year",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "colorEbc",
+            "columnName": "colorEbc",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "extractYieldPct",
+            "columnName": "extractYieldPct",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fermentabilityPct",
+            "columnName": "fermentabilityPct",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "diastaticPowerLintner",
+            "columnName": "diastaticPowerLintner",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "associatedStyles",
+            "columnName": "associatedStyles",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "distilledWaterPh",
+            "columnName": "distilledWaterPh",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "bufferCapacity",
+            "columnName": "bufferCapacity",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "pricePerKg",
+            "columnName": "pricePerKg",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "position",
+            "columnName": "position",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "notes",
+            "columnName": "notes",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_recipe_malt_recipeId",
+            "unique": false,
+            "columnNames": [
+              "recipeId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_recipe_malt_recipeId` ON `${TABLE_NAME}` (`recipeId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "recipe",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "recipeId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "recipe_hop",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `recipeId` INTEGER NOT NULL, `catalogId` INTEGER, `name` TEXT NOT NULL, `amountG` REAL NOT NULL, `origin` TEXT NOT NULL, `year` INTEGER, `alphaAcidPct` REAL NOT NULL, `aromas` TEXT NOT NULL, `form` TEXT NOT NULL, `use` TEXT NOT NULL, `timeMin` INTEGER NOT NULL, `temperatureC` REAL NOT NULL, `pricePerKg` REAL, `position` INTEGER NOT NULL, `notes` TEXT NOT NULL, FOREIGN KEY(`recipeId`) REFERENCES `recipe`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "recipeId",
+            "columnName": "recipeId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "catalogId",
+            "columnName": "catalogId",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "amountG",
+            "columnName": "amountG",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "origin",
+            "columnName": "origin",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "year",
+            "columnName": "year",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "alphaAcidPct",
+            "columnName": "alphaAcidPct",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "aromas",
+            "columnName": "aromas",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "form",
+            "columnName": "form",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "use",
+            "columnName": "use",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timeMin",
+            "columnName": "timeMin",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "temperatureC",
+            "columnName": "temperatureC",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pricePerKg",
+            "columnName": "pricePerKg",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "position",
+            "columnName": "position",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "notes",
+            "columnName": "notes",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_recipe_hop_recipeId",
+            "unique": false,
+            "columnNames": [
+              "recipeId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_recipe_hop_recipeId` ON `${TABLE_NAME}` (`recipeId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "recipe",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "recipeId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "recipe_yeast",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `recipeId` INTEGER NOT NULL, `catalogId` INTEGER, `name` TEXT NOT NULL, `laboratory` TEXT NOT NULL, `type` TEXT NOT NULL, `form` TEXT NOT NULL, `amountG` REAL NOT NULL, `tempMinC` REAL NOT NULL, `tempMaxC` REAL NOT NULL, `attenuationPct` REAL NOT NULL, `flocculation` TEXT NOT NULL, `aromaProfile` TEXT NOT NULL, `popularStyles` TEXT NOT NULL, `cellsPerGramBillions` REAL NOT NULL, `price` REAL, `position` INTEGER NOT NULL, `notes` TEXT NOT NULL, FOREIGN KEY(`recipeId`) REFERENCES `recipe`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "recipeId",
+            "columnName": "recipeId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "catalogId",
+            "columnName": "catalogId",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "laboratory",
+            "columnName": "laboratory",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "form",
+            "columnName": "form",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "amountG",
+            "columnName": "amountG",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tempMinC",
+            "columnName": "tempMinC",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tempMaxC",
+            "columnName": "tempMaxC",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "attenuationPct",
+            "columnName": "attenuationPct",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "flocculation",
+            "columnName": "flocculation",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "aromaProfile",
+            "columnName": "aromaProfile",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "popularStyles",
+            "columnName": "popularStyles",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cellsPerGramBillions",
+            "columnName": "cellsPerGramBillions",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "price",
+            "columnName": "price",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "position",
+            "columnName": "position",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "notes",
+            "columnName": "notes",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_recipe_yeast_recipeId",
+            "unique": false,
+            "columnNames": [
+              "recipeId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_recipe_yeast_recipeId` ON `${TABLE_NAME}` (`recipeId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "recipe",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "recipeId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "recipe_additive",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `recipeId` INTEGER NOT NULL, `catalogId` INTEGER, `name` TEXT NOT NULL, `type` TEXT NOT NULL, `stage` TEXT NOT NULL, `amount` REAL NOT NULL, `unit` TEXT NOT NULL, `timeMin` INTEGER NOT NULL, `acidMeqPerUnit` REAL, `calciumPpmPerGPerL` REAL NOT NULL, `magnesiumPpmPerGPerL` REAL NOT NULL, `sodiumPpmPerGPerL` REAL NOT NULL, `sulfatePpmPerGPerL` REAL NOT NULL, `chloridePpmPerGPerL` REAL NOT NULL, `bicarbonatePpmPerGPerL` REAL NOT NULL, `price` REAL, `position` INTEGER NOT NULL, `notes` TEXT NOT NULL, FOREIGN KEY(`recipeId`) REFERENCES `recipe`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "recipeId",
+            "columnName": "recipeId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "catalogId",
+            "columnName": "catalogId",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "stage",
+            "columnName": "stage",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "amount",
+            "columnName": "amount",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "unit",
+            "columnName": "unit",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timeMin",
+            "columnName": "timeMin",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "acidMeqPerUnit",
+            "columnName": "acidMeqPerUnit",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "calciumPpmPerGPerL",
+            "columnName": "calciumPpmPerGPerL",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "magnesiumPpmPerGPerL",
+            "columnName": "magnesiumPpmPerGPerL",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sodiumPpmPerGPerL",
+            "columnName": "sodiumPpmPerGPerL",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sulfatePpmPerGPerL",
+            "columnName": "sulfatePpmPerGPerL",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "chloridePpmPerGPerL",
+            "columnName": "chloridePpmPerGPerL",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "bicarbonatePpmPerGPerL",
+            "columnName": "bicarbonatePpmPerGPerL",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "price",
+            "columnName": "price",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "position",
+            "columnName": "position",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "notes",
+            "columnName": "notes",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_recipe_additive_recipeId",
+            "unique": false,
+            "columnNames": [
+              "recipeId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_recipe_additive_recipeId` ON `${TABLE_NAME}` (`recipeId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "recipe",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "recipeId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "mash_step",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `recipeId` INTEGER NOT NULL, `name` TEXT NOT NULL, `type` TEXT NOT NULL, `temperatureC` REAL NOT NULL, `timeMin` INTEGER NOT NULL, `rampMin` INTEGER NOT NULL, `infusionL` REAL, `position` INTEGER NOT NULL, FOREIGN KEY(`recipeId`) REFERENCES `recipe`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "recipeId",
+            "columnName": "recipeId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "temperatureC",
+            "columnName": "temperatureC",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timeMin",
+            "columnName": "timeMin",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rampMin",
+            "columnName": "rampMin",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "infusionL",
+            "columnName": "infusionL",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "position",
+            "columnName": "position",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_mash_step_recipeId",
+            "unique": false,
+            "columnNames": [
+              "recipeId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_mash_step_recipeId` ON `${TABLE_NAME}` (`recipeId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "recipe",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "recipeId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "fermentation_step",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `recipeId` INTEGER NOT NULL, `name` TEXT NOT NULL, `temperatureC` REAL NOT NULL, `days` INTEGER NOT NULL, `pressureBar` REAL, `position` INTEGER NOT NULL, FOREIGN KEY(`recipeId`) REFERENCES `recipe`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "recipeId",
+            "columnName": "recipeId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "temperatureC",
+            "columnName": "temperatureC",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "days",
+            "columnName": "days",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pressureBar",
+            "columnName": "pressureBar",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "position",
+            "columnName": "position",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_fermentation_step_recipeId",
+            "unique": false,
+            "columnNames": [
+              "recipeId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_fermentation_step_recipeId` ON `${TABLE_NAME}` (`recipeId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "recipe",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "recipeId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "brew_session",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `recipeId` INTEGER NOT NULL, `brewDate` INTEGER NOT NULL, `measuredPreBoilGravity` REAL, `measuredPreBoilVolumeL` REAL, `measuredOg` REAL, `measuredFg` REAL, `measuredVolumeL` REAL, `measuredMashPh` REAL, `measuredMashTempC` REAL, `fermentationTempC` REAL, `bottledDate` INTEGER, `rating` INTEGER, `tastingNotes` TEXT NOT NULL, `notes` TEXT NOT NULL, FOREIGN KEY(`recipeId`) REFERENCES `recipe`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "recipeId",
+            "columnName": "recipeId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "brewDate",
+            "columnName": "brewDate",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "measuredPreBoilGravity",
+            "columnName": "measuredPreBoilGravity",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "measuredPreBoilVolumeL",
+            "columnName": "measuredPreBoilVolumeL",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "measuredOg",
+            "columnName": "measuredOg",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "measuredFg",
+            "columnName": "measuredFg",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "measuredVolumeL",
+            "columnName": "measuredVolumeL",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "measuredMashPh",
+            "columnName": "measuredMashPh",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "measuredMashTempC",
+            "columnName": "measuredMashTempC",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "fermentationTempC",
+            "columnName": "fermentationTempC",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "bottledDate",
+            "columnName": "bottledDate",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "rating",
+            "columnName": "rating",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "tastingNotes",
+            "columnName": "tastingNotes",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "notes",
+            "columnName": "notes",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_brew_session_recipeId",
+            "unique": false,
+            "columnNames": [
+              "recipeId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_brew_session_recipeId` ON `${TABLE_NAME}` (`recipeId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "recipe",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "recipeId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b3e85dbb7dd0cf05db12e3a4828c2549')"
+    ]
+  }
+}

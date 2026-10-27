@@ -3,6 +3,7 @@ package fr.florianpal.beerrecipe.domain.advisor
 import fr.florianpal.beerrecipe.data.entity.Equipment
 import fr.florianpal.beerrecipe.data.entity.RecipeContext
 import fr.florianpal.beerrecipe.domain.calc.BrewCalculator
+import fr.florianpal.beerrecipe.domain.calc.EquipmentSizing
 import fr.florianpal.beerrecipe.domain.calc.IbuCalculator
 import fr.florianpal.beerrecipe.domain.calc.RecipeStats
 import fr.florianpal.beerrecipe.domain.model.FermentableType
@@ -48,7 +49,7 @@ object RecipeAdvisor {
         val out = mutableListOf<Suggestion>()
         if (d.malts.isEmpty()) {
             out += Suggestion(
-                "Maque", Severity.PROBLEM, "Aucun fermentescible",
+                "Maische", Severity.PROBLEM, "Aucun fermentescible",
                 "Sans malt, aucune densité ne peut être estimée.",
                 "Ajoutez au moins un malt de base.",
             )
@@ -161,7 +162,7 @@ object RecipeAdvisor {
                 val action = if (reference != null) {
                     val eq = ctx.equipment ?: Equipment(name = "")
                     val ibuCtx = IbuCalculator.Context(
-                        batchVolumeL = ctx.details.recipe.batchVolumeL,
+                        batchVolumeL = ctx.batchVolumeL,
                         boilGravity = stats.boilGravity,
                         boilTimeMin = ctx.details.recipe.boilTimeMin,
                         equipmentUtilizationPct = eq.hopUtilizationPct,
@@ -355,23 +356,23 @@ object RecipeAdvisor {
 
         if (stats.caramelFractionPct > 20.0) {
             out += Suggestion(
-                "Maque", Severity.WARNING, "Beaucoup de malts caramel",
-                "${Format.percent(stats.caramelFractionPct)} de la maque. Au-delà de 20 %, " +
+                "Maische", Severity.WARNING, "Beaucoup de malts caramel",
+                "${Format.percent(stats.caramelFractionPct)} de la maische. Au-delà de 20 %, " +
                     "la bière devient sirupeuse et peine à finir sa fermentation.",
                 "Ramenez les caramels sous 15 % et compensez la couleur avec un malt Munich.",
             )
         }
         if (stats.roastedFractionPct > 12.0) {
             out += Suggestion(
-                "Maque", Severity.WARNING, "Torréfiés dominants",
+                "Maische", Severity.WARNING, "Torréfiés dominants",
                 "${Format.percent(stats.roastedFractionPct)} de malts torréfiés : " +
                     "risque d'astringence et d'amertume brûlée.",
-                "Passez une partie en malt déshuské (Carafa Special), moins âpre à couleur égale.",
+                "Passez une partie en malt décortiqué (Carafa Special), moins âpre à couleur égale.",
             )
         }
         if (stats.sugarFractionPct > 25.0) {
             out += Suggestion(
-                "Maque", Severity.WARNING, "Part de sucres élevée",
+                "Maische", Severity.WARNING, "Part de sucres élevée",
                 "${Format.percent(stats.sugarFractionPct)} des points de densité viennent de sucres simples.",
                 "Au-delà de 20 %, le corps s'effondre — sauf style belge où c'est recherché.",
             )
@@ -383,7 +384,7 @@ object RecipeAdvisor {
         if (adjuncts.isNotEmpty() && stats.weightedDiastaticPower in 0.1..30.0) {
             out += Suggestion(
                 "Empâtage", Severity.PROBLEM, "Pouvoir diastasique insuffisant",
-                "%.0f °Lintner en moyenne alors que la maque contient des crus non maltés."
+                "%.0f °Lintner en moyenne alors que la maische contient des crus non maltés."
                     .format(stats.weightedDiastaticPower),
                 "Visez au moins 35 °Lintner : augmentez la part de Pilsner ou de Pale Ale.",
             )
@@ -393,7 +394,7 @@ object RecipeAdvisor {
             val pct = stats.maltContributions.firstOrNull { it.maltId == malt.id }?.weightPct ?: 0.0
             if (malt.type == FermentableType.ROASTED && pct > 10.0) {
                 out += Suggestion(
-                    "Maque", Severity.INFO, "${malt.name} à ${Format.percent(pct)}",
+                    "Maische", Severity.INFO, "${malt.name} à ${Format.percent(pct)}",
                     "Une proportion aussi haute de malt torréfié est réservée aux stouts et porters.",
                     null,
                 )
@@ -409,15 +410,21 @@ object RecipeAdvisor {
         val out = mutableListOf<Suggestion>()
         val w = stats.water
 
-        // Le grain occupe environ 0.67 L par kilo en plus de l'eau d'empâtage.
-        val mashVolumeL = w.mashWaterL + stats.totalGrainKg * 0.67
+        // Le grain occupe de la place en plus de l'eau d'empâtage.
+        val grainL = stats.totalGrainKg * EquipmentSizing.GRAIN_DISPLACEMENT_L_PER_KG
+        val mashVolumeL = w.mashWaterL + grainL
         if (mashVolumeL > eq.mashTunVolumeL) {
             out += Suggestion(
                 "Installation", Severity.PROBLEM, "Cuve d'empâtage trop petite",
                 "L'empâtage occupe ${Format.liters(mashVolumeL)} pour une cuve de " +
                     "${Format.liters(eq.mashTunVolumeL)}.",
-                "Épaississez la maque à %.1f L/kg ou scindez le brassin."
-                    .format(((eq.mashTunVolumeL - stats.totalGrainKg * 0.67) / stats.totalGrainKg.coerceAtLeast(0.1))),
+                if (ctx.usesFixedWater) {
+                    "Limitez l'empâtage à %.1f L en passant le reste de l'eau en rinçage, ou scindez le brassin."
+                        .format(eq.mashTunVolumeL - grainL)
+                } else {
+                    "Épaississez la maische à %.1f L/kg ou scindez le brassin."
+                        .format((eq.mashTunVolumeL - grainL) / stats.totalGrainKg.coerceAtLeast(0.1))
+                },
             )
         }
         if (w.preBoilVolumeL > eq.kettleVolumeL) {
@@ -425,16 +432,21 @@ object RecipeAdvisor {
                 "Installation", Severity.PROBLEM, "Cuve d'ébullition trop petite",
                 "${Format.liters(w.preBoilVolumeL)} à faire bouillir dans " +
                     "${Format.liters(eq.kettleVolumeL)}.",
-                "Réduisez le volume de brassin ou allongez l'ébullition pour partir de moins d'eau.",
+                if (ctx.usesFixedWater) {
+                    "Réduisez l'eau de départ de l'installation ou scindez le brassin."
+                } else {
+                    "Réduisez le volume de brassin ou raccourcissez l'ébullition pour partir de moins d'eau."
+                },
             )
         }
-        if (ctx.details.recipe.mashThicknessLPerKg !in 2.0..4.5 && stats.totalGrainKg > 0) {
+        // En eau fixe, l'empâtage à pleine eau est voulu : l'épaisseur n'est plus un réglage.
+        if (!ctx.usesFixedWater && ctx.mashThicknessLPerKg !in 2.0..4.5 && stats.totalGrainKg > 0) {
             out += Suggestion(
                 "Empâtage", Severity.INFO,
                 "Épaisseur d'empâtage inhabituelle",
-                "%.1f L/kg. La plage courante va de 2.5 à 4 L/kg."
-                    .format(ctx.details.recipe.mashThicknessLPerKg),
-                "Une maque épaisse protège les enzymes, une maque fluide améliore la conversion.",
+                "%.1f L/kg. La plage courante va de 2,5 à 4 L/kg."
+                    .format(ctx.mashThicknessLPerKg),
+                "Une maische épaisse protège les enzymes, une maische fluide améliore la conversion.",
             )
         }
         val pilsnerShare = ctx.details.malts
@@ -517,7 +529,7 @@ object RecipeAdvisor {
         val yieldPct = reference?.extractYieldPct ?: 80.0
         val ppg = Units.SUCROSE_PPG * yieldPct / 100.0
         if (ppg <= 0 || efficiency <= 0) return 0.0
-        val gallons = Units.litersToGallons(ctx.details.recipe.batchVolumeL)
+        val gallons = Units.litersToGallons(ctx.batchVolumeL)
         val lb = deltaPoints * gallons / (ppg * efficiency)
         return lb * Units.KG_PER_LB * 1000.0
     }
@@ -529,7 +541,7 @@ object RecipeAdvisor {
         deltaPoints: Double,
     ): String {
         if (stats.totalGravityPoints <= 0) return "—"
-        val gallons = Units.litersToGallons(ctx.details.recipe.batchVolumeL)
+        val gallons = Units.litersToGallons(ctx.batchVolumeL)
         val currentPoints = stats.totalGravityPoints / gallons
         if (currentPoints <= 0) return "—"
         val factor = (currentPoints + deltaPoints) / currentPoints
@@ -541,7 +553,7 @@ object RecipeAdvisor {
     private fun volumeForGravity(stats: RecipeStats, targetOg: Double): Double {
         val targetPoints = Units.sgToPoints(targetOg)
         if (targetPoints <= 0) return 0.0
-        // Les points d'extrait sont fixés par la maque : seul le volume peut encore bouger.
+        // Les points d'extrait sont fixés par la maische : seul le volume peut encore bouger.
         return stats.totalGravityPoints / targetPoints * Units.L_PER_GALLON
     }
 
@@ -554,7 +566,7 @@ object RecipeAdvisor {
         stats: RecipeStats,
         targetEbc: Double,
     ): Double {
-        val gallons = Units.litersToGallons(ctx.details.recipe.batchVolumeL)
+        val gallons = Units.litersToGallons(ctx.batchVolumeL)
         fun mcuFor(ebc: Double): Double =
             (Units.ebcToSrm(ebc) / 1.4922).pow(1.0 / 0.6859)
         val deltaMcu = mcuFor(targetEbc) - mcuFor(stats.ebc)

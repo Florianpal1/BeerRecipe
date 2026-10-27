@@ -95,7 +95,7 @@ fun RecipeListScreen(onOpenRecipe: (Long) -> Unit) {
                     message = if (query.isBlank()) "Aucune recette pour l'instant."
                     else "Aucune recette ne correspond à cette recherche.",
                     hint = if (query.isBlank())
-                        "Commencez par créer une recette, puis composez sa maque et son houblonnage."
+                        "Commencez par créer une recette, puis composez sa maische et son houblonnage."
                     else null,
                 )
             } else {
@@ -211,7 +211,7 @@ private fun RecipeCard(
                 MiniStat("ABV", Format.abv(stats.abv))
                 MiniStat("IBU", Format.ibu(stats.ibu))
                 MiniStat("EBC", Format.ebc(stats.ebc))
-                MiniStat("Volume", Format.liters(recipe.batchVolumeL))
+                MiniStat("Volume", Format.liters(stats.water.batchVolumeL))
             }
         }
     }

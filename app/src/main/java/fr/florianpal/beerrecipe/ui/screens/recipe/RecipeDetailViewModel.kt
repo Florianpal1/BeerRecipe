@@ -78,9 +78,9 @@ class RecipeDetailViewModel(
 
     // --- Malts ---------------------------------------------------------------------
 
-    fun addMalt(malt: Malt) = viewModelScope.launch {
+    fun addMalt(malt: Malt, amountG: Double) = viewModelScope.launch {
         val position = state.value?.context?.details?.malts?.size ?: 0
-        repository.saveRecipeMalt(malt.toRecipeLine(recipeId, amountG = 1000.0, position = position))
+        repository.saveRecipeMalt(malt.toRecipeLine(recipeId, amountG = amountG, position = position))
     }
 
     fun addBlankMalt() = viewModelScope.launch {
@@ -95,9 +95,9 @@ class RecipeDetailViewModel(
 
     // --- Houblons ------------------------------------------------------------------
 
-    fun addHop(hop: Hop) = viewModelScope.launch {
+    fun addHop(hop: Hop, amountG: Double) = viewModelScope.launch {
         val position = state.value?.context?.details?.hops?.size ?: 0
-        repository.saveRecipeHop(hop.toRecipeLine(recipeId, amountG = 20.0, position = position))
+        repository.saveRecipeHop(hop.toRecipeLine(recipeId, amountG = amountG, position = position))
     }
 
     fun addBlankHop() = viewModelScope.launch {
@@ -112,9 +112,9 @@ class RecipeDetailViewModel(
 
     // --- Levures -------------------------------------------------------------------
 
-    fun addYeast(yeast: Yeast) = viewModelScope.launch {
+    fun addYeast(yeast: Yeast, amountG: Double) = viewModelScope.launch {
         val position = state.value?.context?.details?.yeasts?.size ?: 0
-        repository.saveRecipeYeast(yeast.toRecipeLine(recipeId, position = position))
+        repository.saveRecipeYeast(yeast.toRecipeLine(recipeId, amountG = amountG, position = position))
     }
 
     fun saveYeast(item: RecipeYeast) = viewModelScope.launch { repository.saveRecipeYeast(item) }
@@ -122,9 +122,9 @@ class RecipeDetailViewModel(
 
     // --- Additifs ------------------------------------------------------------------
 
-    fun addAdditive(additive: Additive) = viewModelScope.launch {
+    fun addAdditive(additive: Additive, amount: Double) = viewModelScope.launch {
         val position = state.value?.context?.details?.additives?.size ?: 0
-        repository.saveRecipeAdditive(additive.toRecipeLine(recipeId, position = position))
+        repository.saveRecipeAdditive(additive.toRecipeLine(recipeId, amount = amount, position = position))
     }
 
     fun addBlankAdditive() = viewModelScope.launch {
@@ -194,8 +194,8 @@ class RecipeDetailViewModel(
     // --- Actions sur la recette ----------------------------------------------------
 
     fun scaleTo(volumeL: Double) {
-        val details = state.value?.context?.details ?: return
-        viewModelScope.launch { repository.scaleRecipe(details, volumeL) }
+        val context = state.value?.context ?: return
+        viewModelScope.launch { repository.scaleRecipe(context.details, volumeL, context.batchVolumeL) }
     }
 
     fun toggleFavourite() {

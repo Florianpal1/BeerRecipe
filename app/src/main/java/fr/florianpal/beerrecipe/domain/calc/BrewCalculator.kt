@@ -29,7 +29,7 @@ object BrewCalculator {
         val yeasts = ctx.details.yeasts
         val additives = ctx.details.additives
 
-        val batchL = recipe.batchVolumeL.coerceAtLeast(0.1)
+        val batchL = ctx.batchVolumeL.coerceAtLeast(0.1)
         val efficiency = recipe.efficiencyPct / 100.0
 
         // --- Volumes d'eau ------------------------------------------------------------
@@ -37,7 +37,7 @@ object BrewCalculator {
         val totalFermentableKg = malts.sumOf { it.amountG } / 1000.0
         val postBoilHotL = (batchL + eq.trubLossL) / (1.0 - eq.coolingShrinkagePct / 100.0)
         val preBoilL = postBoilHotL + eq.boilOffRateLPerHour * (recipe.boilTimeMin / 60.0)
-        val mashWaterL = (mashedGrainKg * recipe.mashThicknessLPerKg).coerceAtLeast(0.0)
+        val mashWaterL = (mashedGrainKg * ctx.mashThicknessLPerKg).coerceAtLeast(0.0)
         val absorptionL = mashedGrainKg * eq.grainAbsorptionLPerKg
         val totalWaterL = preBoilL + absorptionL + eq.mashTunDeadspaceL
         val spargeWaterL = (totalWaterL - mashWaterL).coerceAtLeast(0.0)
@@ -47,7 +47,7 @@ object BrewCalculator {
         val strikeTempC = strikeTemperature(
             targetTempC = mashTempC,
             grainTempC = recipe.grainTempC,
-            thicknessLPerKg = recipe.mashThicknessLPerKg,
+            thicknessLPerKg = ctx.mashThicknessLPerKg,
             tunHeatCapacityLEq = eq.mashTunHeatCapacityLEq,
             mashWaterL = mashWaterL,
         )
@@ -206,7 +206,7 @@ object BrewCalculator {
         return Units.gToLb(malt.amountG) * ppg * yieldFactor
     }
 
-    /** Points de densité que la maque rendrait avec un rendement parfait. */
+    /** Points de densité que la maische rendrait avec un rendement parfait. */
     fun maxGravityPoints(malts: List<RecipeMalt>): Double =
         malts.sumOf { gravityPointsOf(it, 1.0) }
 
@@ -282,7 +282,7 @@ object BrewCalculator {
     }
 
     /**
-     * Pouvoir diastasique moyen de la maque, en °Lintner. En dessous d'environ 30,
+     * Pouvoir diastasique moyen de la maische, en °Lintner. En dessous d'environ 30,
      * les enzymes des malts de base ne suffisent plus à convertir l'amidon des crus.
      */
     fun weightedDiastaticPower(malts: List<RecipeMalt>): Double {

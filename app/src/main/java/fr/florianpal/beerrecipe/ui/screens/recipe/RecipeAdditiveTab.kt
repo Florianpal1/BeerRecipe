@@ -213,8 +213,9 @@ fun RecipeAdditiveTab(
                     "%.1f %s".format(a.defaultAmount, a.defaultUnit.label)
             },
             searchText = { "${it.name} ${it.type.label} ${it.notes}" },
-            onPick = {
-                viewModel.addAdditive(it)
+            amountOf = { a -> PickAmount(default = a.defaultAmount, suffix = a.defaultUnit.label, decimals = 2) },
+            onPick = { additive, amount ->
+                viewModel.addAdditive(additive, amount)
                 showPicker = false
             },
             onDismiss = { showPicker = false },

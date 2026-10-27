@@ -35,7 +35,7 @@ object SeedStyles {
     val ALL: List<BeerStyle> = listOf(
         style("1B", "American Lager", "Lager standard",
             1.040..1.050, 1.004..1.010, 4.2..5.3, 8.0..18.0, 2.0..4.0,
-            description = "Lager légère et très désaltérante, maltée discrète, houblon effacé."),
+            description = "Lager légère et très désaltérante, malt discret, houblon effacé."),
         style("1C", "Cream Ale", "Ale américaine légère",
             1.042..1.055, 1.006..1.012, 4.2..5.6, 8.0..20.0, 2.5..5.0,
             description = "Ale claire et nette fermentée à froid, souvent avec du maïs."),
@@ -189,7 +189,7 @@ object SeedStyles {
         style("21B", "Black IPA", "IPA spéciale",
             1.050..1.085, 1.010..1.018, 5.5..9.0, 50.0..90.0, 25.0..40.0,
             mashPh = 5.4..5.6,
-            description = "IPA noire : houblon résineux, torréfaction discrète grâce aux malts déshusqués."),
+            description = "IPA noire : houblon résineux, torréfaction discrète grâce aux malts décortiqués."),
         style("21B", "Red IPA", "IPA spéciale",
             1.056..1.070, 1.008..1.016, 5.5..7.5, 40.0..70.0, 11.0..17.0,
             description = "IPA rouge : caramel et fruits rouges sous le houblon américain."),

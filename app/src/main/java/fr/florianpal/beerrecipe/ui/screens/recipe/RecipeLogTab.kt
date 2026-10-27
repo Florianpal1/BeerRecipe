@@ -64,7 +64,7 @@ fun RecipeLogTab(
                 BrewCalculator.measuredEfficiency(
                     malts,
                     og,
-                    session.measuredVolumeL ?: state.context.details.recipe.batchVolumeL,
+                    session.measuredVolumeL ?: state.context.batchVolumeL,
                 )
             }
             val abv = if (session.measuredOg != null && session.measuredFg != null) {

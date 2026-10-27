@@ -17,14 +17,20 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import fr.florianpal.beerrecipe.data.entity.Equipment
+import fr.florianpal.beerrecipe.domain.calc.EquipmentSizing
 import fr.florianpal.beerrecipe.domain.model.EquipmentType
 import fr.florianpal.beerrecipe.domain.model.Format
 import fr.florianpal.beerrecipe.ui.common.EmptyState
@@ -75,6 +81,14 @@ fun EquipmentScreen() {
             modifier = Modifier.padding(padding),
         ) {
             items(equipments, key = { it.id }) { eq ->
+                var calibrating by remember { mutableStateOf(false) }
+                if (calibrating) {
+                    CalibrationDialog(
+                        equipment = eq,
+                        onApply = { viewModel.save(it); calibrating = false },
+                        onDismiss = { calibrating = false },
+                    )
+                }
                 ExpandableLineCard(
                     title = eq.name + if (eq.isDefault) "  ★" else "",
                     summary = "${eq.type.label} · ${Format.liters(eq.batchVolumeL)} · " +
@@ -90,11 +104,57 @@ fun EquipmentScreen() {
                     }
 
                     Text("Volumes", style = MaterialTheme.typography.labelLarge)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Switch(
+                            checked = eq.usesFixedWater,
+                            onCheckedChange = { fixed ->
+                                viewModel.save(if (fixed) eq.withCurrentWaterFixed() else eq.copy(fixedMashWaterL = null))
+                            },
+                        )
+                        Text(
+                            "  Partir d'une quantité d'eau fixe",
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
+                    eq.fixedMashWaterL?.let { mashWater ->
+                        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                            NumberField(
+                                "Eau d'empâtage", mashWater,
+                                { v -> viewModel.save(eq.withFixedWater(mashWaterL = v)) },
+                                suffix = "L", modifier = Modifier.weight(1f),
+                            )
+                            NumberField(
+                                "Eau de rinçage", eq.spargeWaterL,
+                                { v -> viewModel.save(eq.withFixedWater(mashWater, spargeWaterL = v)) },
+                                suffix = "L", modifier = Modifier.weight(1f),
+                            )
+                        }
+                        Text(
+                            "Eau totale ${Format.liters(eq.fixedTotalWaterL ?: 0.0)} : le rinçage rejoint " +
+                                "la cuve d'ébullition avec le moût.",
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                    }
+                    NumberField(
+                        "Grain de référence", eq.referenceGrainKg,
+                        { v -> viewModel.save(eq.copy(referenceGrainKg = v)) },
+                        suffix = "kg", decimals = 2,
+                    )
+                    if (eq.usesFixedWater) {
+                        Text(
+                            "Le volume en fermenteur se déduit de cette eau. Le grain de référence sert " +
+                                "seulement à l'estimer ici : chaque recette le recalcule avec son propre grain. " +
+                                "La température de rinçage se règle dans l'onglet Procédé de la recette.",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         NumberField(
-                            "Brassin", eq.batchVolumeL,
+                            if (eq.usesFixedWater) "Brassin (calculé)" else "Brassin", eq.batchVolumeL,
                             { v -> viewModel.save(eq.copy(batchVolumeL = v)) },
                             suffix = "L", modifier = Modifier.weight(1f),
+                            enabled = !eq.usesFixedWater,
                         )
                         IntField(
                             "Ébullition", eq.boilTimeMin,
@@ -119,8 +179,20 @@ fun EquipmentScreen() {
                         { v -> viewModel.save(eq.copy(fermenterVolumeL = v)) },
                         suffix = "L",
                     )
+                    VesselCheck(eq) { viewModel.save(EquipmentSizing.applySuggested(eq, eq.referenceGrainKg)) }
 
                     Text("Pertes et évaporation", style = MaterialTheme.typography.labelLarge)
+                    TextButton(onClick = { calibrating = true }, modifier = Modifier.fillMaxWidth()) {
+                        Text("Étalonner avec un brassin réel")
+                    }
+                    if (eq.usesFixedWater) {
+                        Text(
+                            "Évaporation, volume mort et pertes suivent l'eau de départ au prorata " +
+                                "quand vous la modifiez. Vous pouvez toujours les corriger à la main.",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         NumberField(
                             "Évaporation", eq.boilOffRateLPerHour,
@@ -128,7 +200,7 @@ fun EquipmentScreen() {
                             suffix = "L/h", decimals = 2, modifier = Modifier.weight(1f),
                         )
                         NumberField(
-                            "Rétractation", eq.coolingShrinkagePct,
+                            "Rétraction", eq.coolingShrinkagePct,
                             { v -> viewModel.save(eq.copy(coolingShrinkagePct = v)) },
                             suffix = "%", modifier = Modifier.weight(1f),
                         )
@@ -173,9 +245,11 @@ fun EquipmentScreen() {
                     }
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         NumberField(
-                            "Épaisseur d'empâtage", eq.mashThicknessLPerKg,
+                            if (eq.usesFixedWater) "Épaisseur (calculée)" else "Épaisseur d'empâtage",
+                            eq.mashThicknessLPerKg,
                             { v -> viewModel.save(eq.copy(mashThicknessLPerKg = v)) },
                             suffix = "L/kg", decimals = 2, modifier = Modifier.weight(1f),
+                            enabled = !eq.usesFixedWater,
                         )
                         NumberField(
                             "Inertie de la cuve", eq.mashTunHeatCapacityLEq,
@@ -199,7 +273,11 @@ fun EquipmentScreen() {
                         viewModel.save(eq.copy(notes = v))
                     }, singleLine = false)
 
-                    SectionCard("Volumes calculés") {
+                    SectionCard(
+                        "Volumes calculés",
+                        subtitle = "Pour ${Format.kg(eq.referenceGrainKg)} de grain",
+                    ) {
+                        KeyValueRow("Eau de départ", Format.liters(eq.totalWaterL(eq.referenceGrainKg)))
                         KeyValueRow("Avant ébullition", Format.liters(eq.preBoilVolumeL))
                         KeyValueRow("Chaud en fin d'ébullition", Format.liters(eq.postBoilHotVolumeL))
                         KeyValueRow("En fermenteur", Format.liters(eq.batchVolumeL))
@@ -207,6 +285,33 @@ fun EquipmentScreen() {
                 }
             }
             item { Text("") }
+        }
+    }
+}
+
+/**
+ * Contrôle des cuves pour le grain de référence : alerte quand une cuve est trop petite,
+ * et propose des contenances qui gardent la marge de travail d'usage.
+ */
+@Composable
+private fun VesselCheck(eq: Equipment, onApplySuggested: () -> Unit) {
+    val vessels = EquipmentSizing.vessels(eq, eq.referenceGrainKg)
+    vessels.filter { it.tooSmall }.forEach { v ->
+        Text(
+            "${v.label} trop petite : ${Format.liters(v.neededL)} à loger dans ${Format.liters(v.currentL)}.",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.error,
+        )
+    }
+    SectionCard(
+        "Cuves conseillées",
+        subtitle = "Pour ${Format.kg(eq.referenceGrainKg)} de grain, marge de travail comprise",
+    ) {
+        vessels.forEach { v ->
+            KeyValueRow(v.label, "${Format.liters(v.suggestedL)} (actuelle ${Format.liters(v.currentL)})")
+        }
+        TextButton(onClick = onApplySuggested, modifier = Modifier.fillMaxWidth()) {
+            Text("Appliquer les tailles conseillées")
         }
     }
 }

@@ -40,7 +40,7 @@ data class Malt(
     val moisturePct: Double = 4.0,
     /** Pouvoir diastasique en °Lintner : capacité à convertir l'amidon, y compris celui des crus. */
     val diastaticPowerLintner: Double = 0.0,
-    /** Proportion maximale conseillée dans la maque, en pourcentage. */
+    /** Proportion maximale conseillée dans la maische, en pourcentage. */
     val maxBatchPct: Double = 100.0,
     /** Styles de bière dans lesquels ce malt est traditionnel. */
     val associatedStyles: List<String> = emptyList(),

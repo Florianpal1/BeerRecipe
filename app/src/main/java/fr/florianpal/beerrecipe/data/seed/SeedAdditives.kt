@@ -67,13 +67,13 @@ object SeedAdditives {
         salt("Sel de table (NaCl)", na = 393.4, cl = 606.7,
             notes = "Quelques ppm de sodium élargissent la perception du malt."),
         salt("Bicarbonate de sodium (NaHCO3)", na = 273.7, hco3 = 726.3,
-            notes = "Remonte le pH d'empâtage des maques très torréfiées."),
+            notes = "Remonte le pH d'empâtage des maisches très torréfiées."),
         salt("Craie (CaCO3)", ca = 400.4, hco3 = 1220.0,
             notes = "Très peu soluble dans l'eau froide : préférez le bicarbonate."),
 
         // --- Acides ----------------------------------------------------------------
         acid("Acide lactique 80 %", 10.7,
-            "Environ 10.7 mEq par mL. Au-delà de 5 mL pour 20 L, un goût lactique se perçoit."),
+            "Environ 10,7 mEq par mL. Au-delà de 5 mL pour 20 L, un goût lactique se perçoit."),
         acid("Acide phosphorique 75 %", 11.4,
             "Plus neutre au goût que l'acide lactique, préféré pour les bières pâles."),
 

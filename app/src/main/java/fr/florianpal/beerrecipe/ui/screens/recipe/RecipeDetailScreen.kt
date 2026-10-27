@@ -41,7 +41,7 @@ import fr.florianpal.beerrecipe.ui.common.NumberField
 import fr.florianpal.beerrecipe.ui.common.appContainer
 
 private val TABS = listOf(
-    "Résumé", "Maque", "Houblons", "Levures", "Additifs", "Procédé", "Journal",
+    "Résumé", "Maische", "Houblons", "Levures", "Additifs", "Procédé", "Journal",
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -132,7 +132,7 @@ fun RecipeDetailScreen(recipeId: Long, onBack: () -> Unit) {
     }
 
     if (showScaleDialog && current != null) {
-        var target by remember { mutableStateOf(current.context.details.recipe.batchVolumeL) }
+        var target by remember { mutableStateOf(current.context.batchVolumeL) }
         AlertDialog(
             onDismissRequest = { showScaleDialog = false },
             title = { Text("Mettre la recette à l'échelle") },

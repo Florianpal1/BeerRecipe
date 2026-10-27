@@ -1,5 +1,6 @@
 package fr.florianpal.beerrecipe.data.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import fr.florianpal.beerrecipe.domain.model.EquipmentType
@@ -16,9 +17,26 @@ data class Equipment(
     val type: EquipmentType = EquipmentType.ALL_GRAIN,
     val description: String = "",
 
-    /** Volume visé dans le fermenteur, en litres : c'est la base de tous les calculs. */
+    /** Volume visé dans le fermenteur, en litres : la base des calculs, sauf en eau fixe. */
     val batchVolumeL: Double = 20.0,
     val boilTimeMin: Int = 60,
+
+    /**
+     * Eau d'empâtage fixe, en litres. Renseignée, l'eau commande : avec l'eau de rinçage,
+     * elle forme l'eau totale, d'où se déduit le volume en fermenteur pour le grain de chaque recette.
+     * La colonne garde son nom historique.
+     */
+    @ColumnInfo(name = "startWaterL")
+    val fixedMashWaterL: Double? = null,
+    /** Poids de grain servant à estimer, sur l'installation seule, le volume tiré de l'eau de départ. */
+    @ColumnInfo(defaultValue = "5.0")
+    val referenceGrainKg: Double = 5.0,
+    /**
+     * Eau de rinçage des drêches en eau fixe, en litres, versée en plus de l'eau d'empâtage.
+     * Elle rejoint ensuite la cuve d'ébullition avec le moût.
+     */
+    @ColumnInfo(defaultValue = "0.0")
+    val spargeWaterL: Double = 0.0,
 
     /** Volume utile des cuves, pour alerter en cas de débordement. */
     val mashTunVolumeL: Double = 30.0,
@@ -27,7 +45,7 @@ data class Equipment(
 
     /** Évaporation pendant l'ébullition, en litres par heure. */
     val boilOffRateLPerHour: Double = 3.0,
-    /** Rétractation du moût au refroidissement, en pourcentage du volume chaud. */
+    /** Rétraction du moût au refroidissement, en pourcentage du volume chaud. */
     val coolingShrinkagePct: Double = 4.0,
 
     /** Eau retenue par la drêche, en litres par kilo de grain. */
@@ -61,4 +79,74 @@ data class Equipment(
     /** Volume à mettre en cuve avant d'allumer le feu. */
     val preBoilVolumeL: Double
         get() = postBoilHotVolumeL + boilOffRateLPerHour * boilTimeHours
+
+    /** Eau totale à prévoir pour un poids de grain donné : absorption et volume mort compris. */
+    fun totalWaterL(grainKg: Double): Double =
+        preBoilVolumeL + grainKg * grainAbsorptionLPerKg + mashTunDeadspaceL
+
+    /**
+     * Volume en fermenteur obtenu à partir d'une eau totale : le plan d'eau parcouru à
+     * l'envers (absorption et volume mort, évaporation, rétraction, puis pertes de cuve).
+     */
+    fun batchVolumeFromWater(
+        totalWaterL: Double,
+        grainKg: Double,
+        boilTimeMin: Int = this.boilTimeMin,
+    ): Double {
+        val preBoil = totalWaterL - grainKg * grainAbsorptionLPerKg - mashTunDeadspaceL
+        val postBoilHot = preBoil - boilOffRateLPerHour * boilTimeMin / 60.0
+        return (postBoilHot * (1.0 - coolingShrinkagePct / 100.0) - trubLossL).coerceAtLeast(0.0)
+    }
+
+    /** Vrai quand l'eau est fixée : le volume en fermenteur se déduit alors de l'eau. */
+    val usesFixedWater: Boolean get() = fixedMashWaterL != null
+
+    /** En eau fixe, toute l'eau du brassage : empâtage plus rinçage. */
+    val fixedTotalWaterL: Double?
+        get() = fixedMashWaterL?.let { it + spargeWaterL }
+
+    /**
+     * Épaisseur d'empâtage pour un poids de grain donné. En eau fixe, l'eau d'empâtage est
+     * imposée : l'épaisseur suit donc le grain.
+     */
+    fun mashThicknessFor(grainKg: Double): Double =
+        fixedMashWaterL?.takeIf { grainKg > 0 }?.let { it / grainKg } ?: mashThicknessLPerKg
+
+    /**
+     * Change l'eau d'empâtage ou de rinçage en emportant les pertes avec l'eau totale, au prorata :
+     * une installation qui brasse plus d'eau est supposée évaporer et perdre davantage dans les
+     * mêmes proportions.
+     */
+    fun withFixedWater(mashWaterL: Double, spargeWaterL: Double = this.spargeWaterL): Equipment {
+        val oldTotal = fixedTotalWaterL
+        val newTotal = mashWaterL + spargeWaterL
+        val updated = copy(fixedMashWaterL = mashWaterL, spargeWaterL = spargeWaterL)
+        if (oldTotal == null || oldTotal <= 0 || mashWaterL <= 0 || newTotal <= 0) return updated
+        val factor = newTotal / oldTotal
+        return updated.copy(
+            boilOffRateLPerHour = boilOffRateLPerHour * factor,
+            mashTunDeadspaceL = mashTunDeadspaceL * factor,
+            trubLossL = trubLossL * factor,
+            fermenterLossL = fermenterLossL * factor,
+        )
+    }
+
+    /**
+     * Passe en eau fixe sans rien changer au résultat : on reprend l'eau que demande le brassin
+     * actuel pour le grain de référence, répartie entre empâtage (selon l'épaisseur) et rinçage.
+     */
+    fun withCurrentWaterFixed(): Equipment {
+        val total = totalWaterL(referenceGrainKg)
+        val mash = (referenceGrainKg * mashThicknessLPerKg).coerceIn(0.0, total)
+        return copy(fixedMashWaterL = mash, spargeWaterL = total - mash)
+    }
+
+    /** Recale le brassin et l'épaisseur d'empâtage sur l'eau, quand celle-ci est fixée. */
+    fun withDerivedValues(): Equipment {
+        val water = fixedTotalWaterL ?: return this
+        return copy(
+            batchVolumeL = batchVolumeFromWater(water, referenceGrainKg),
+            mashThicknessLPerKg = mashThicknessFor(referenceGrainKg),
+        )
+    }
 }

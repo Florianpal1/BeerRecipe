@@ -43,12 +43,13 @@ fun RecipeProcessTab(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item {
-            SectionCard("Plan d'eau", subtitle = "Calculé depuis l'installation et la maque") {
+            SectionCard("Plan d'eau", subtitle = "Calculé depuis l'installation et la maische") {
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     NumberField(
-                        "Épaisseur d'empâtage", recipe.mashThicknessLPerKg,
+                        "Épaisseur d'empâtage", state.context.mashThicknessLPerKg,
                         { v -> viewModel.editRecipe { it.copy(mashThicknessLPerKg = v) } },
                         suffix = "L/kg", decimals = 2, modifier = Modifier.weight(1f),
+                        enabled = !state.context.usesFixedWater,
                     )
                     NumberField(
                         "Température du grain", recipe.grainTempC,
@@ -84,7 +85,7 @@ fun RecipeProcessTab(
             }
         }
 
-        items(state.context.details.sortedMashSteps, key = { it.id }) { step ->
+        items(state.context.details.sortedMashSteps, key = { "mash-${it.id}" }) { step ->
             ExpandableLineCard(
                 title = step.name,
                 summary = "${Format.temp(step.temperatureC)} pendant ${step.timeMin} min · ${step.type.label}",
@@ -127,14 +128,14 @@ fun RecipeProcessTab(
                 subtitle = "Estimation par bilan de charges entre les malts et l'eau",
             ) {
                 KeyValueRow("pH estimé", Format.ph(stats.mashPh.estimatedPh), emphasis = true)
-                KeyValueRow("pH de la maque en eau distillée", Format.ph(stats.mashPh.distilledWaterPh))
+                KeyValueRow("pH de la maische en eau distillée", Format.ph(stats.mashPh.distilledWaterPh))
                 KeyValueRow(
                     "Alcalinité résiduelle de l'eau",
                     "%.0f ppm CaCO3".format(stats.mashPh.residualAlkalinity),
                 )
                 KeyValueRow("Apport alcalin", "%.1f mEq".format(stats.mashPh.alkalinityMeq))
                 KeyValueRow("Acide ajouté", "%.1f mEq".format(stats.mashPh.acidMeq))
-                KeyValueRow("Pouvoir tampon de la maque", "%.0f mEq/pH".format(stats.mashPh.bufferCapacity))
+                KeyValueRow("Pouvoir tampon de la maische", "%.0f mEq/pH".format(stats.mashPh.bufferCapacity))
                 Text(
                     "Une estimation reste une estimation : mesurez le pH sur un échantillon " +
                         "refroidi à 20 °C, dix à quinze minutes après le début de l'empâtage.",
@@ -150,7 +151,7 @@ fun RecipeProcessTab(
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         ) } }
 
-        items(state.context.details.sortedFermentationSteps, key = { it.id }) { step ->
+        items(state.context.details.sortedFermentationSteps, key = { "fermentation-${it.id}" }) { step ->
             ExpandableLineCard(
                 title = step.name,
                 summary = "${Format.temp(step.temperatureC)} pendant ${step.days} jour(s)",

@@ -106,9 +106,14 @@ class BrewRepository(private val db: AppDatabase) {
     /**
      * Met à l'échelle une recette vers un autre volume. Les ingrédients suivent
      * proportionnellement ; le rendement, lui, ne change pas avec le volume.
+     * [currentVolumeL] est le volume effectif, qui peut venir de l'eau de départ de l'installation.
      */
-    suspend fun scaleRecipe(details: RecipeWithDetails, newVolumeL: Double) {
-        val factor = newVolumeL / details.recipe.batchVolumeL
+    suspend fun scaleRecipe(
+        details: RecipeWithDetails,
+        newVolumeL: Double,
+        currentVolumeL: Double = details.recipe.batchVolumeL,
+    ) {
+        val factor = newVolumeL / currentVolumeL
         if (factor <= 0 || !factor.isFinite()) return
         details.malts.forEach { db.recipeDao().upsertMalt(it.copy(amountG = it.amountG * factor)) }
         details.hops.forEach { db.recipeDao().upsertHop(it.copy(amountG = it.amountG * factor)) }

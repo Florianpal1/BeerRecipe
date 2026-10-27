@@ -25,6 +25,9 @@ data class RecipeWithDetails(
     val sortedAdditives get() = additives.sortedWith(compareBy({ it.stage.ordinal }, { it.position }))
     val sortedMashSteps get() = mashSteps.sortedBy { it.position }
     val sortedFermentationSteps get() = fermentationSteps.sortedBy { it.position }
+
+    /** Poids des grains qui passent à l'empâtage, en kilos : sucres et extraits n'y vont pas. */
+    val mashedGrainKg get() = malts.filter { it.type.needsMash }.sumOf { it.amountG } / 1000.0
 }
 
 /**
@@ -36,4 +39,19 @@ data class RecipeContext(
     val equipment: Equipment?,
     val style: BeerStyle?,
     val water: WaterProfile?,
-)
+) {
+    /** Vrai quand l'installation fixe l'eau : le volume en fermenteur en découle. */
+    val usesFixedWater: Boolean get() = equipment?.usesFixedWater == true
+
+    /** Volume en fermenteur réellement visé : celui de la recette, ou celui que permet l'eau fixée. */
+    val batchVolumeL: Double
+        get() = equipment?.fixedTotalWaterL
+            ?.let { equipment.batchVolumeFromWater(it, details.mashedGrainKg, details.recipe.boilTimeMin) }
+            ?: details.recipe.batchVolumeL
+
+    /** Épaisseur d'empâtage réellement appliquée : en eau fixe, elle suit le grain. */
+    val mashThicknessLPerKg: Double
+        get() = equipment?.takeIf { usesFixedWater && details.mashedGrainKg > 0 }
+            ?.mashThicknessFor(details.mashedGrainKg)
+            ?: details.recipe.mashThicknessLPerKg
+}

@@ -179,8 +179,11 @@ fun RecipeYeastTab(
                 "${it.name} ${it.laboratory} ${it.productId} ${it.popularStyles.joinToString(" ")} " +
                     it.aromaProfile.joinToString(" ")
             },
-            onPick = {
-                viewModel.addYeast(it)
+            amountOf = { y ->
+                PickAmount(default = y.packageSizeG, suffix = if (y.form == YeastForm.DRY) "g" else "mL")
+            },
+            onPick = { yeast, amount ->
+                viewModel.addYeast(yeast, amount)
                 showPicker = false
             },
             onDismiss = { showPicker = false },

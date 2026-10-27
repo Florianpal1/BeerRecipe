@@ -5,6 +5,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import fr.florianpal.beerrecipe.data.dao.AdditiveDao
 import fr.florianpal.beerrecipe.data.dao.BeerStyleDao
 import fr.florianpal.beerrecipe.data.dao.BrewSessionDao
@@ -48,7 +50,7 @@ import fr.florianpal.beerrecipe.data.entity.Yeast
         FermentationStep::class,
         BrewSession::class,
     ],
-    version = 1,
+    version = 4,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)
@@ -64,6 +66,34 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun brewSessionDao(): BrewSessionDao
 
     companion object {
+        /** Version 2 : eau de départ fixe et grain de référence sur les installations. */
+        val MIGRATION_1_2 = object : Migration(1, 2) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE equipment ADD COLUMN startWaterL REAL")
+                db.execSQL("ALTER TABLE equipment ADD COLUMN referenceGrainKg REAL NOT NULL DEFAULT 5.0")
+            }
+        }
+
+        /** Version 3 : part de l'eau de départ réservée au rinçage. */
+        val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE equipment ADD COLUMN spargeWaterL REAL NOT NULL DEFAULT 0.0")
+            }
+        }
+
+        /**
+         * Version 4 : en eau fixe, la colonne startWaterL ne contient plus l'eau totale mais la seule
+         * eau d'empâtage, le rinçage venant en plus. L'eau totale de chaque installation est conservée.
+         */
+        val MIGRATION_3_4 = object : Migration(3, 4) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "UPDATE equipment SET startWaterL = MAX(startWaterL - spargeWaterL, 0) " +
+                        "WHERE startWaterL IS NOT NULL"
+                )
+            }
+        }
+
         @Volatile private var instance: AppDatabase? = null
 
         fun get(context: Context): AppDatabase = instance ?: synchronized(this) {
@@ -72,6 +102,7 @@ abstract class AppDatabase : RoomDatabase() {
                 AppDatabase::class.java,
                 "beer-recipe.db",
             )
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
                 // Les clés étrangères pilotent la suppression en cascade des lignes de recette.
                 .build()
                 .also { instance = it }

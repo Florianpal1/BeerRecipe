@@ -176,8 +176,9 @@ fun RecipeHopTab(
                 "${Format.percent(h.alphaAcidPct)} AA · ${h.origin} · ${h.aromas.joinToString(", ")}"
             },
             searchText = { "${it.name} ${it.origin} ${it.aromas.joinToString(" ")}" },
-            onPick = {
-                viewModel.addHop(it)
+            amountOf = { PickAmount(default = 20.0, suffix = "g") },
+            onPick = { hop, amount ->
+                viewModel.addHop(hop, amount)
                 showPicker = false
             },
             onDismiss = { showPicker = false },

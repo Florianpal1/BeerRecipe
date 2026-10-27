@@ -103,9 +103,10 @@ fun RecipeSummaryTab(
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     NumberField(
-                        "Volume en fermenteur", recipe.batchVolumeL,
+                        "Volume en fermenteur", state.context.batchVolumeL,
                         { v -> viewModel.editRecipe { it.copy(batchVolumeL = v) } },
                         suffix = "L", modifier = Modifier.weight(1f),
+                        enabled = !state.context.usesFixedWater,
                     )
                     IntField(
                         "Ébullition", recipe.boilTimeMin,
@@ -118,6 +119,15 @@ fun RecipeSummaryTab(
                     { v -> viewModel.editRecipe { it.copy(efficiencyPct = v) } },
                     suffix = "%",
                 )
+                if (state.context.usesFixedWater) {
+                    Text(
+                        "Volume calculé depuis l'eau totale de l'installation " +
+                            "(${Format.liters(state.context.equipment?.fixedTotalWaterL ?: 0.0)}, empâtage et rinçage compris) et le grain " +
+                            "de la recette. Pour le changer, modifiez l'eau dans l'installation.",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
                 Dropdown(
                     label = "Eau de brassage",
                     options = catalog.waterProfiles,

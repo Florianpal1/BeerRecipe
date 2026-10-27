@@ -84,7 +84,7 @@ object SeedMalts {
             notes = "Blé ancien, céréalier et légèrement épicé ; prévoir des balles de riz."),
         malt("Malt diastasique (whisky)", FermentableType.BASE, "Allemagne", 4.0, 81.0, 160.0, maxPct = 50.0,
             styles = listOf("Brut IPA"),
-            notes = "Très riche en enzymes : redonne du pouvoir diastasique aux maques chargées en crus."),
+            notes = "Très riche en enzymes : redonne du pouvoir diastasique aux maisches chargées en crus."),
 
         // --- Malts spéciaux --------------------------------------------------------
         malt("Carapils / Carafoam", FermentableType.SPECIALTY, "Allemagne", 4.0, 72.0, maxPct = 10.0,
@@ -100,7 +100,7 @@ object SeedMalts {
             styles = listOf("English Porter", "British Brown Ale")),
         malt("Malt acidulé", FermentableType.ACIDULATED, "Allemagne", 4.0, 78.0, maxPct = 5.0,
             styles = listOf("German Pils", "Berliner Weisse"),
-            notes = "1 % de la maque abaisse le pH d'empâtage d'environ 0.1."),
+            notes = "1 % de la maische abaisse le pH d'empâtage d'environ 0,1."),
         malt("Chit malt", FermentableType.SPECIALTY, "Allemagne", 2.5, 78.0, 60.0, maxPct = 15.0,
             styles = listOf("German Pils", "Munich Helles"),
             notes = "Malt à peine germé : riche en protéines, renforce la mousse et le corps."),
@@ -160,7 +160,7 @@ object SeedMalts {
             styles = listOf("English Porter", "American Brown Ale")),
         malt("Carafa Special II", FermentableType.ROASTED, "Allemagne", 1100.0, 70.0, maxPct = 10.0,
             styles = listOf("Munich Dunkel", "Schwarzbier"),
-            notes = "Déshusqué : colore et torréfie sans apporter d'astringence."),
+            notes = "Décortiqué : colore et torréfie sans apporter d'astringence."),
         malt("Carafa Special III", FermentableType.ROASTED, "Allemagne", 1400.0, 70.0, maxPct = 8.0,
             styles = listOf("Schwarzbier", "Imperial Stout")),
         malt("Malt black (torréfié)", FermentableType.ROASTED, "Royaume-Uni", 1300.0, 70.0, maxPct = 6.0,

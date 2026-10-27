@@ -10,7 +10,7 @@ data class HopContribution(
     val utilizationPct: Double,
 )
 
-/** Part d'un malt dans la maque, pour l'affichage détaillé. */
+/** Part d'un malt dans la maische, pour l'affichage détaillé. */
 data class MaltContribution(
     val maltId: Long,
     val name: String,
