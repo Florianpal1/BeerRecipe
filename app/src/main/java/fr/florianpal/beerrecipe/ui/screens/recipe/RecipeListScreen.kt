@@ -62,7 +62,8 @@ fun RecipeListScreen(onOpenRecipe: (Long) -> Unit) {
     val viewModel: RecipeListViewModel =
         viewModel(factory = RecipeListViewModel.factory(container.repository))
     val recipes by viewModel.recipes.collectAsStateWithLifecycle()
-    val query by viewModel.searchQuery.collectAsStateWithLifecycle()
+    // État local : relire la recherche via le StateFlow décale d'une frame et perd des frappes.
+    var query by remember { mutableStateOf(viewModel.searchQuery.value) }
     val scope = rememberCoroutineScope()
 
     var showCreateDialog by remember { mutableStateOf(false) }
@@ -92,7 +93,10 @@ fun RecipeListScreen(onOpenRecipe: (Long) -> Unit) {
         Column(Modifier.fillMaxSize().padding(padding)) {
             OutlinedTextField(
                 value = query,
-                onValueChange = viewModel::search,
+                onValueChange = {
+                    query = it
+                    viewModel.search(it)
+                },
                 label = { Text("Rechercher") },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                 singleLine = true,

@@ -19,6 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.text.KeyboardOptions
@@ -34,6 +35,29 @@ fun formatNumber(value: Double, decimals: Int): String =
     else String.format(Locale.FRANCE, "%.${decimals}f", value).trimEnd('0').trimEnd(',', '.')
 
 /**
+ * Texte d'un champ dont la valeur fait l'aller-retour par la base. Pendant la saisie, c'est le
+ * texte local qui fait foi : sinon une émission en retard (valeur d'il y a une ou deux frappes)
+ * écraserait les derniers caractères tapés ou ferait réapparaître ceux qu'on vient d'effacer.
+ * La valeur externe n'est reprise que lorsque le champ n'a pas le focus.
+ */
+private class EditableText(initial: String) {
+    var text by mutableStateOf(initial)
+    var focused by mutableStateOf(false)
+}
+
+@Composable
+private fun rememberEditableText(display: String, isInSync: (String) -> Boolean): EditableText {
+    val state = remember { EditableText(display) }
+    LaunchedEffect(display, state.focused) {
+        if (!state.focused && !isInSync(state.text)) state.text = display
+    }
+    return state
+}
+
+private fun Modifier.trackFocus(state: EditableText): Modifier =
+    onFocusChanged { state.focused = it.hasFocus }
+
+/**
  * Champ numérique tolérant : la saisie reste libre tant qu'elle n'est pas analysable,
  * ce qui permet de taper « 12, » puis « 12,5 » sans que le champ ne se réécrive tout seul.
  */
@@ -47,14 +71,11 @@ fun NumberField(
     decimals: Int = 1,
     enabled: Boolean = true,
 ) {
-    var text by remember { mutableStateOf(formatNumber(value, decimals)) }
-    LaunchedEffect(value) {
-        if (text.toDoubleOrNullFlexible() != value) text = formatNumber(value, decimals)
-    }
+    val state = rememberEditableText(formatNumber(value, decimals)) { it.toDoubleOrNullFlexible() == value }
     OutlinedTextField(
-        value = text,
+        value = state.text,
         onValueChange = { raw ->
-            text = raw
+            state.text = raw
             raw.toDoubleOrNullFlexible()?.let(onValueChange)
         },
         label = { Text(label) },
@@ -62,7 +83,7 @@ fun NumberField(
         singleLine = true,
         enabled = enabled,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().trackFocus(state),
     )
 }
 
@@ -75,21 +96,18 @@ fun IntField(
     modifier: Modifier = Modifier,
     suffix: String? = null,
 ) {
-    var text by remember { mutableStateOf(value.toString()) }
-    LaunchedEffect(value) {
-        if (text.trim().toIntOrNull() != value) text = value.toString()
-    }
+    val state = rememberEditableText(value.toString()) { it.trim().toIntOrNull() == value }
     OutlinedTextField(
-        value = text,
+        value = state.text,
         onValueChange = { raw ->
-            text = raw.filter { it.isDigit() || it == '-' }
-            text.toIntOrNull()?.let(onValueChange)
+            state.text = raw.filter { it.isDigit() || it == '-' }
+            state.text.toIntOrNull()?.let(onValueChange)
         },
         label = { Text(label) },
         suffix = suffix?.let { { Text(it) } },
         singleLine = true,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().trackFocus(state),
     )
 }
 
@@ -103,16 +121,13 @@ fun OptionalNumberField(
     suffix: String? = null,
     decimals: Int = 2,
 ) {
-    var text by remember { mutableStateOf(value?.let { formatNumber(it, decimals) } ?: "") }
-    LaunchedEffect(value) {
-        if (text.toDoubleOrNullFlexible() != value) {
-            text = value?.let { formatNumber(it, decimals) } ?: ""
-        }
+    val state = rememberEditableText(value?.let { formatNumber(it, decimals) } ?: "") {
+        it.toDoubleOrNullFlexible() == value
     }
     OutlinedTextField(
-        value = text,
+        value = state.text,
         onValueChange = { raw ->
-            text = raw
+            state.text = raw
             onValueChange(raw.toDoubleOrNullFlexible())
         },
         label = { Text(label) },
@@ -120,7 +135,7 @@ fun OptionalNumberField(
         placeholder = { Text("facultatif") },
         singleLine = true,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().trackFocus(state),
     )
 }
 
@@ -133,14 +148,18 @@ fun LabeledTextField(
     placeholder: String? = null,
     onValueChange: (String) -> Unit,
 ) {
+    val state = rememberEditableText(value) { it == value }
     OutlinedTextField(
-        value = value,
-        onValueChange = onValueChange,
+        value = state.text,
+        onValueChange = { raw ->
+            state.text = raw
+            onValueChange(raw)
+        },
         label = { Text(label) },
         placeholder = placeholder?.let { { Text(it) } },
         singleLine = singleLine,
         minLines = if (singleLine) 1 else 3,
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().trackFocus(state),
     )
 }
 
@@ -220,19 +239,17 @@ fun TagsField(
     modifier: Modifier = Modifier,
     onValuesChange: (List<String>) -> Unit,
 ) {
-    var text by remember { mutableStateOf(values.joinToString(", ")) }
-    LaunchedEffect(values) {
-        val parsed = text.split(',').map { it.trim() }.filter { it.isNotEmpty() }
-        if (parsed != values) text = values.joinToString(", ")
+    val state = rememberEditableText(values.joinToString(", ")) { text ->
+        text.split(',').map { it.trim() }.filter { it.isNotEmpty() } == values
     }
     OutlinedTextField(
-        value = text,
+        value = state.text,
         onValueChange = { raw ->
-            text = raw
+            state.text = raw
             onValuesChange(raw.split(',').map { it.trim() }.filter { it.isNotEmpty() })
         },
         label = { Text(label) },
         placeholder = { Text("séparés par des virgules") },
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().trackFocus(state),
     )
 }
